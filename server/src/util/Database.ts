@@ -9,7 +9,7 @@ class DB {
         this.db = new DatabaseConstructor(path.join('data', 'brutusforce.db'));
     }
 
-    select(query: string, _options: string[] = []): any {
+    select(query: string, _options: string[] | {} = []): any {
         return this.db.prepare(query).all(_options)
     }
 
