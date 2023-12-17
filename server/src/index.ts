@@ -7,7 +7,7 @@ import getAvailability from "./routes/getAvailability.js"
 import getClassroomSchedule from "./routes/getClassroomSchedule.js"
 import getSectionInfo from "./routes/getSectionInfo.js"
 
-const app = express()
+const app = express() 
 const __dirname = path.resolve()
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'public')))

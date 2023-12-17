@@ -7,9 +7,14 @@ const route = Router();
 
 // SQLite doesn't allow for booleans to be stored. Change datatype of day to boolean.
 function changeDayType(res: any) {
+    let class_days: string[] = []
     for (let day of days) {
-        res[day] = res[day] == "0" ? false : true 
+        if (res[day] == "1") {
+            class_days.push(day)
+        }
+        delete res[day]
     }
+    res.days = class_days
 
     return res
 }

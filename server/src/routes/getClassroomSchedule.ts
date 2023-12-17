@@ -25,9 +25,9 @@ route.get('/getClassroomSchedule', function (req: Request, res: Response) {
                 classes.section_number as sectionNo, 
                 start_time as start, 
                 end_time as end, 
-                class_duration as duration,
+                class_duration as duration
             FROM classes
-            WHERE " + day + " = 1 AND 
+            WHERE ` + day + ` = 1 AND 
             facility_id = ? 
             ORDER BY start_time`, req.query.facility)
         result.push({
