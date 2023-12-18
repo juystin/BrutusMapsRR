@@ -20,6 +20,7 @@ app.use('/api', getAvailability);
 app.use('/api', getClassroomSchedule);
 app.use('/api', getSectionInfo);
 
-app.listen(8000 || process.env.PORT, () => {
+// Fallback to 8000 if env PORT not specified
+app.listen(process.env.PORT || 8000, () => {
     console.log("Server started")
 })
