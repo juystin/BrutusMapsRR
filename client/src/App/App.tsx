@@ -1,15 +1,11 @@
 import './App.css'
+import Map from './components/Map/Map'
 
 function App() {
 
 	return (
 		<>
-			<h1>
-				BrutusMaps
-			</h1>
-			<p>
-				WIP
-			</p>
+			<Map />
 		</>
 	)
 }
