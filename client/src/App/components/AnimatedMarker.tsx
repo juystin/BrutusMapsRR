@@ -1,6 +1,6 @@
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
-import { Marker } from "react-map-gl";
+import { Marker, useMap } from "react-map-gl";
 import MarkerLogo from "./MarkerLogo";
 
 export interface AnimatedMarkerProps {
@@ -19,6 +19,8 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
     const [yIndex, setYIndex] = useState<number>(0);
     
     const [initiallyRendered, setInitiallyRendered] = useState<boolean>(false);
+
+    const map = useMap().current
 
     const baseStyle = {
         pointerEvents: ("none" as React.CSSProperties["pointerEvents"]),
@@ -43,6 +45,7 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
         } else {
             // Marker is active
             setMarkerClickCounter((count) => count + 1)
+            map!.jumpTo({center: [buildingData.lng, buildingData.lat]})
         }
         api.start({
             to: {
@@ -51,7 +54,6 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
             delay: initiallyRendered ? 0 : Math.floor(Math.random() * 300),
             onRest: () => {
                 if (!initiallyRendered) {
-                    console.log("done")
                     setInitiallyRendered(true)
                 }
             }

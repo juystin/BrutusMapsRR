@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css'
-import Map, { MapLayerMouseEvent } from 'react-map-gl/maplibre';
+import Map from 'react-map-gl/maplibre';
 import AnimatedMarker from './components/AnimatedMarker';
 import axios from 'axios';
 
@@ -53,7 +53,6 @@ function App() {
 				cursor='default'
 				onClick={() => {
 					if (!hoveringOverMarker) {
-						console.log("CLICK")
 						setActiveMarker(0)
 					}
 				}}
