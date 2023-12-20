@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css'
 import Map from 'react-map-gl/maplibre';
-import AnimatedMarker from './components/Map/components/Marker/AnimatedMarker';
+import AnimatedMarker from './components/AnimatedMarker';
 import axios from 'axios';
 
 function App() {
