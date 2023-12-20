@@ -49,6 +49,9 @@ route.get('/getAvailability', function (req: Request, res: Response) {
 
         let classrooms: any[] = [];
 
+        // Flag returns false if no classrooms available, true if at least one classroom available.
+        let flag: boolean = false;
+
         let classroomAvailability = db.select(`
         WITH CurrentClasses AS (
             SELECT facility_id, current_subject, current_code, current_start, current_end
@@ -130,11 +133,13 @@ route.get('/getAvailability', function (req: Request, res: Response) {
                     available: true,
                     nextClassAt: classroomInfo.next_start
                 })
+                flag = true
             }
         }
 
         result.push({
             buildingNum: res.building_num,
+            available: flag,
             classrooms: classrooms
         })
     }

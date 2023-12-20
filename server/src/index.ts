@@ -1,5 +1,6 @@
 import express from "express"
 import path from "path"
+import cors from "cors"
 import 'dotenv/config'
 import getIndex from "./routes/getIndex.js"
 import getBuildings from "./routes/getBuildings.js"
@@ -9,6 +10,8 @@ import getSectionInfo from "./routes/getSectionInfo.js"
 
 const app = express() 
 const __dirname = path.resolve()
+
+app.use(cors())
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'public')))
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')))
