@@ -61,6 +61,7 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
                     inkscape:path-effect="#path-effect1"
                     transform="translate(1.5930187,8.3095321)"
                     pointerEvents={"all"}
+                    cursor={"pointer"}
                     onClick={() => handleClick()}
                     />
                 <circle
@@ -73,6 +74,7 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
                     cy="65.32711"
                     r="29.848427"
                     pointerEvents={"all"}
+                    cursor={"pointer"}
                     onClick={() => handleClick()}
                     />
                 <animated.path
@@ -86,6 +88,7 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
                     inkscape:original-d="m 65.526827,62.664006 19.085483,0.31809"
                     transform="matrix(2.3603739,0,0,2.3185732,-110.93224,-80.150266)"
                     pointerEvents={"all"}
+                    cursor={"pointer"}
                     onClick={() => handleClick()}
                     />
             </g>

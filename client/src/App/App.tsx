@@ -48,6 +48,7 @@ function App() {
 				mapStyle={`http://` + import.meta.env.VITE_WEBSERVER_IP + `/styles/brutustiles_style/style.json`}
 				onLoad={() => setMapLoaded(true)}
 				doubleClickZoom={false}
+				cursor='default'
 			>
 				{ mapLoaded ?
 					buildingData.map((buildingData: any) => {
