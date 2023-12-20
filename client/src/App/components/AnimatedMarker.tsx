@@ -1,20 +1,19 @@
 /// <reference types="vite-plugin-svgr/client" />
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
-import { Marker } from "react-map-gl";
-import Icon from "./map_marker.svg?react";
-import { count } from "console";
+import { Marker, useMap } from "react-map-gl";
 import MarkerLogo from "./MarkerLogo";
 
 export interface AnimatedMarkerProps {
-    data: any
+    buildingData: any
+    available: boolean,
     markerClickCounter: number,
     setMarkerClickCounter: React.Dispatch<React.SetStateAction<number>>,
     activeMarker: number,
     setActiveMarker: React.Dispatch<React.SetStateAction<number>>
 }
 
-const AnimatedMarker = ({data, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker}: AnimatedMarkerProps) => {
+const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker}: AnimatedMarkerProps) => {
 
     const [clicked, setClicked] = useState<boolean>(false);
     const [yIndex, setYIndex] = useState<number>(0);
@@ -38,7 +37,7 @@ const AnimatedMarker = ({data, markerClickCounter, setMarkerClickCounter, active
     }))
 
     useEffect(() => {
-        if (activeMarker !== data.buildingNum) {
+        if (activeMarker !== buildingData.buildingNum) {
             // Another marker is active, reset this one
             setClicked(false)
         } else {
@@ -47,7 +46,7 @@ const AnimatedMarker = ({data, markerClickCounter, setMarkerClickCounter, active
         }
         api.start({
             to: {
-                height: clicked && (activeMarker === data.buildingNum) ? "min(15vh, 100px)" : "min(8vh, 45px)",
+                height: clicked && (activeMarker === buildingData.buildingNum) ? "min(15vh, 100px)" : "min(8vh, 45px)",
             },
             delay: initiallyRendered ? 0 : Math.floor(Math.random() * 300),
             onRest: () => {
@@ -60,7 +59,7 @@ const AnimatedMarker = ({data, markerClickCounter, setMarkerClickCounter, active
     }, [clicked, api, activeMarker])
 
     useEffect(() => {
-        if (activeMarker === data.buildingNum) {
+        if (activeMarker === buildingData.buildingNum) {
             setYIndex(markerClickCounter)
         }
     }, [markerClickCounter])
@@ -73,9 +72,9 @@ const AnimatedMarker = ({data, markerClickCounter, setMarkerClickCounter, active
     }, [markerClickCounter])
 
     return (
-        <Marker longitude={data.lng} latitude={data.lat} anchor={'bottom'} style={{position: "absolute", zIndex: yIndex, pointerEvents: ("none" as React.CSSProperties["pointerEvents"])}}>
+        <Marker longitude={buildingData.lng} latitude={buildingData.lat} anchor={'bottom'} style={{position: "absolute", zIndex: yIndex, pointerEvents: ("none" as React.CSSProperties["pointerEvents"])}}>
             <animated.div style={{...baseStyle, ...animation}}>
-                <MarkerLogo setClicked={setClicked} setActiveMarker={setActiveMarker} buildingNum={data.buildingNum}/>
+                <MarkerLogo available={available} clicked={clicked} setClicked={setClicked} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingNum={buildingData.buildingNum}/>
             </animated.div>
         </Marker>
      );

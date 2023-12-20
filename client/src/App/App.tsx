@@ -8,6 +8,7 @@ function App() {
 
 	const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 	const [buildingData, setBuildingData] = useState<any>(null);
+	const [availabilityData, setAvailabilityData] = useState<any>(null);
 
 	// Tracks click counts for Marker z-indexes. Allows for most recently clicked marker to be on top.
 	const [markerClickCounter, setMarkerClickCounter] = useState<number>(0);
@@ -25,9 +26,17 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
+		axios.get('http://localhost:8000/api/getAvailability')
+			.then(function (response) {
+				console.log(response)
+				setAvailabilityData(response.data)
+			})
+			.catch(function (error) {
+				console.log(error);
+			})
 	}, [])
 
-	return ( buildingData ?
+	return ( buildingData && availabilityData ?
 		<>
 			<Map
 				initialViewState={{
@@ -43,7 +52,7 @@ function App() {
 				{ mapLoaded ?
 					buildingData.map((buildingData: any) => {
 						return (
-							<AnimatedMarker data={buildingData} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker}/>
+							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum).available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker}/>
 						)
 					})
 					: <></>

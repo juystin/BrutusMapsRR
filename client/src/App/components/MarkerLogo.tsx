@@ -1,15 +1,46 @@
+import { animated, useSpring } from "@react-spring/web"
+import { useEffect } from "react"
+
 export interface MarkerLogoProps {
+    available: boolean,
+    clicked: boolean,
     setClicked: React.Dispatch<React.SetStateAction<boolean>>,
+    activeMarker: number,
     setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
     buildingNum: number
 }
 
-const MarkerLogo = ({ setClicked, setActiveMarker, buildingNum }: MarkerLogoProps) => {
+const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMarker, buildingNum }: MarkerLogoProps) => {
+
+    const [animation, api] = useSpring(() => ({
+        from: {
+            strokeDasharray: "10 50",
+            strokeDashoffset: "75",
+            opacity: 0
+        }
+    }))
 
     const handleClick = () => {
         setClicked((state) => !state)
         setActiveMarker(buildingNum)
     }
+
+    useEffect(() => {
+        if (available) {
+            api.start({
+                to: {
+                    strokeDashoffset: clicked && activeMarker === buildingNum ? "101" : "75",
+                    opacity: clicked && activeMarker === buildingNum ? 1 : 0
+                },
+                config: {
+                    tension: 100,
+                    friction: 30,
+                    mass: 1
+                },
+                delay: 192
+            })
+        }
+    }, [clicked, activeMarker])
 
     return ( 
         <svg
@@ -21,8 +52,8 @@ const MarkerLogo = ({ setClicked, setActiveMarker, buildingNum }: MarkerLogoProp
             <g transform="matrix(1.1588572,0,0,1.1588572,-9.0525663,-17.144586) ">
                 <path
                     display="inline"
-                    fill="#000000"
-                    stroke="#000000"
+                    fill={available ? "#BA0C2F" : "#A7B1B7"}
+                    stroke={available ? "#BA0C2F" : "#A7B1B7"}
                     strokeWidth="0.330729"
                     d="M 64.652259,181.46587 C 62.696472,177.3655 41.199546,132.00857 19.859121,74.898126 11.554877,52.674616 20.723041,11.721423 64.652259,10.008733 108.58148,11.721423 117.74964,52.674616 109.4454,74.898126 88.104972,132.00857 66.608046,177.3655 64.652259,181.46587 Z"
                     id="path1"
@@ -44,13 +75,12 @@ const MarkerLogo = ({ setClicked, setActiveMarker, buildingNum }: MarkerLogoProp
                     pointerEvents={"all"}
                     onClick={() => handleClick()}
                     />
-                <path
+                <animated.path
                     fill="none"
-                    stroke="#000000"
-                    strokeWidth="2.45617"
-                    strokeDasharray="none"
-                    strokeOpacity="1"
+                    stroke={available ? "#B63651" : "#A7B1B7"}
+                    strokeWidth="1.4"
                     d="m 65.526827,62.664006 c 0.09184,-5.510555 4.44153,-9.911638 9.709125,-9.823845 5.267595,0.08779 9.468206,4.63138 9.376363,10.141935 -0.09184,5.510555 -4.44153,9.911638 -9.709125,9.823845 -5.267594,-0.08779 -9.468205,-4.63138 -9.376363,-10.141935 z"
+                    style={animation}
                     id="path4"
                     inkscape:path-effect="#path-effect4"
                     inkscape:original-d="m 65.526827,62.664006 19.085483,0.31809"
