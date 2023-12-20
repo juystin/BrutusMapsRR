@@ -9,10 +9,11 @@ export interface AnimatedMarkerProps {
     markerClickCounter: number,
     setMarkerClickCounter: React.Dispatch<React.SetStateAction<number>>,
     activeMarker: number,
-    setActiveMarker: React.Dispatch<React.SetStateAction<number>>
+    setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
+    setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker}: AnimatedMarkerProps) => {
+const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker, setHoveringOverMarker}: AnimatedMarkerProps) => {
 
     const [clicked, setClicked] = useState<boolean>(false);
     const [yIndex, setYIndex] = useState<number>(0);
@@ -73,7 +74,7 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
     return (
         <Marker longitude={buildingData.lng} latitude={buildingData.lat} anchor={'bottom'} style={{position: "absolute", zIndex: yIndex, pointerEvents: ("none" as React.CSSProperties["pointerEvents"])}}>
             <animated.div style={{...baseStyle, ...animation}}>
-                <MarkerLogo available={available} clicked={clicked} setClicked={setClicked} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingNum={buildingData.buildingNum}/>
+                <MarkerLogo available={available} clicked={clicked} setClicked={setClicked} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingNum={buildingData.buildingNum} setHoveringOverMarker={setHoveringOverMarker}/>
             </animated.div>
         </Marker>
      );

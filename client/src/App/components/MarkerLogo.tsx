@@ -7,10 +7,11 @@ export interface MarkerLogoProps {
     setClicked: React.Dispatch<React.SetStateAction<boolean>>,
     activeMarker: number,
     setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
-    buildingNum: number
+    buildingNum: number,
+    setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMarker, buildingNum }: MarkerLogoProps) => {
+const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMarker, buildingNum, setHoveringOverMarker }: MarkerLogoProps) => {
 
     const [animation, api] = useSpring(() => ({
         from: {
@@ -63,6 +64,8 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
                     pointerEvents={"all"}
                     cursor={"pointer"}
                     onClick={() => handleClick()}
+                    onMouseEnter={() => setHoveringOverMarker(true)}
+                    onMouseLeave={() => setHoveringOverMarker(false)}
                     />
                 <circle
                     display="inline"
@@ -76,6 +79,8 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
                     pointerEvents={"all"}
                     cursor={"pointer"}
                     onClick={() => handleClick()}
+                    onMouseEnter={() => setHoveringOverMarker(true)}
+                    onMouseLeave={() => setHoveringOverMarker(false)}
                     />
                 <animated.path
                     fill="none"
@@ -90,6 +95,8 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
                     pointerEvents={"all"}
                     cursor={"pointer"}
                     onClick={() => handleClick()}
+                    onMouseEnter={() => setHoveringOverMarker(true)}
+                    onMouseLeave={() => setHoveringOverMarker(false)}
                     />
             </g>
             </svg>

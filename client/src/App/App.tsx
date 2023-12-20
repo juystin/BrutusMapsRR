@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css'
-import Map from 'react-map-gl/maplibre';
+import Map, { MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import AnimatedMarker from './components/AnimatedMarker';
 import axios from 'axios';
 
@@ -15,6 +15,8 @@ function App() {
 
 	// Tracks currently clicked marker, by building number.
 	const [activeMarker, setActiveMarker] = useState<number>(0);
+
+	const [hoveringOverMarker, setHoveringOverMarker] = useState<boolean>(false);
 
 	useEffect(() => {
 		// Default marker order is by first-in placement. Knowing this, place markers bottom to top to prevent weird overlaps (i.e., place by latitude)
@@ -49,11 +51,17 @@ function App() {
 				onLoad={() => setMapLoaded(true)}
 				doubleClickZoom={false}
 				cursor='default'
+				onClick={() => {
+					if (!hoveringOverMarker) {
+						console.log("CLICK")
+						setActiveMarker(0)
+					}
+				}}
 			>
 				{ mapLoaded ?
 					buildingData.map((buildingData: any) => {
 						return (
-							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum).available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker}/>
+							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum).available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker}/>
 						)
 					})
 					: <></>
