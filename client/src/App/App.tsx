@@ -9,8 +9,15 @@ function App() {
 	const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 	const [buildingData, setBuildingData] = useState<any>(null);
 
+	// Tracks click counts for Marker z-indexes. Allows for most recently clicked marker to be on top.
+	const [markerClickCounter, setMarkerClickCounter] = useState<number>(0);
+
+	// Tracks currently clicked marker, by building number.
+	const [activeMarker, setActiveMarker] = useState<number>(0);
+
 	useEffect(() => {
-		axios.get('http://localhost:8000/api/getBuildings')
+		// Default marker order is by first-in placement. Knowing this, place markers bottom to top to prevent weird overlaps (i.e., place by latitude)
+		axios.get('http://localhost:8000/api/getBuildings?order=lat')
 			.then(function (response) {
 				console.log(response)
 				setBuildingData(response.data)
@@ -31,11 +38,12 @@ function App() {
 				style={{width: "100%", height: "100%"}}
 				mapStyle={`http://` + import.meta.env.VITE_WEBSERVER_IP + `/styles/brutustiles_style/style.json`}
 				onLoad={() => setMapLoaded(true)}
+				doubleClickZoom={false}
 			>
 				{ mapLoaded ?
 					buildingData.map((buildingData: any) => {
 						return (
-							<AnimatedMarker longitude={buildingData.lng} latitude={buildingData.lat} />
+							<AnimatedMarker data={buildingData} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker}/>
 						)
 					})
 					: <></>
