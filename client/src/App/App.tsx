@@ -3,6 +3,8 @@ import './App.css'
 import Map from 'react-map-gl/maplibre';
 import AnimatedMarker from './components/AnimatedMarker';
 import axios from 'axios';
+import Modal from './components/Modal';
+import { ModalTypes } from './types/ModalTypes';
 
 function App() {
 
@@ -18,6 +20,8 @@ function App() {
 
 	const [hoveringOverMarker, setHoveringOverMarker] = useState<boolean>(false);
 
+	const [modalType, setModalType] = useState<ModalTypes>(ModalTypes.ALL)
+
 	useEffect(() => {
 		// Default marker order is by first-in placement. Knowing this, place markers bottom to top to prevent weird overlaps (i.e., place by latitude)
 		axios.get('http://localhost:8000/api/getBuildings?order=lat')
@@ -28,7 +32,7 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get('http://localhost:8000/api/getAvailability')
+		axios.get('http://localhost:8000/api/getAvailability?day=wednesday&time=1200')
 			.then(function (response) {
 				console.log(response)
 				setAvailabilityData(response.data)
@@ -40,13 +44,14 @@ function App() {
 
 	return ( buildingData && availabilityData ?
 		<>
+			<Modal type={modalType} activeMarker={activeMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType}/>
 			<Map
 				initialViewState={{
-					longitude: -83.01599036,
-					latitude: 40.00222129,
+					longitude: buildingData.find((building: any) => building.buildingNum === "279").lng,
+					latitude: buildingData.find((building: any) => building.buildingNum === "279").lat,
 					zoom: 14
 				}}
-				style={{width: "100%", height: "100%"}}
+				style={{width: "100%", height: "100%", position: "relative", zIndex: "1"}}
 				mapStyle={`http://` + import.meta.env.VITE_WEBSERVER_IP + `/styles/brutustiles_style/style.json`}
 				onLoad={() => setMapLoaded(true)}
 				doubleClickZoom={false}
@@ -54,13 +59,15 @@ function App() {
 				onClick={() => {
 					if (!hoveringOverMarker) {
 						setActiveMarker(0)
+						setModalType(ModalTypes.ALL)
 					}
 				}}
 			>
-				{ mapLoaded ?
+				{ //mapLoaded ?
+					true ?
 					buildingData.map((buildingData: any) => {
 						return (
-							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum).available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker}/>
+							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum).available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
 						)
 					})
 					: <></>

@@ -1,5 +1,6 @@
 import { animated, useSpring } from "@react-spring/web"
 import { useEffect } from "react"
+import { ModalTypes } from "../types/ModalTypes"
 
 export interface MarkerLogoProps {
     available: boolean,
@@ -8,10 +9,11 @@ export interface MarkerLogoProps {
     activeMarker: number,
     setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
     buildingNum: number,
-    setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>
+    setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>,
+    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>
 }
 
-const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMarker, buildingNum, setHoveringOverMarker }: MarkerLogoProps) => {
+const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMarker, buildingNum, setHoveringOverMarker, setModalType }: MarkerLogoProps) => {
 
     const [animation, api] = useSpring(() => ({
         from: {
@@ -24,6 +26,7 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
     const handleClick = () => {
         setClicked((state) => !state)
         setActiveMarker(buildingNum)
+        setModalType(ModalTypes.BUILDING)
     }
 
     useEffect(() => {

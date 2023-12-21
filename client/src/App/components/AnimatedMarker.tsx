@@ -2,6 +2,7 @@ import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { Marker, useMap } from "react-map-gl";
 import MarkerLogo from "./MarkerLogo";
+import { ModalTypes } from "../types/ModalTypes";
 
 export interface AnimatedMarkerProps {
     buildingData: any
@@ -10,10 +11,11 @@ export interface AnimatedMarkerProps {
     setMarkerClickCounter: React.Dispatch<React.SetStateAction<number>>,
     activeMarker: number,
     setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
-    setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>
+    setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>,
+    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>
 }
 
-const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker, setHoveringOverMarker}: AnimatedMarkerProps) => {
+const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker, setHoveringOverMarker, setModalType}: AnimatedMarkerProps) => {
 
     const [clicked, setClicked] = useState<boolean>(false);
     const [yIndex, setYIndex] = useState<number>(0);
@@ -45,7 +47,7 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
         } else {
             // Marker is active
             setMarkerClickCounter((count) => count + 1)
-            map!.jumpTo({center: [buildingData.lng, buildingData.lat]})
+            map!.jumpTo({center: [Number(buildingData.lng) + 0.01, buildingData.lat]})
         }
         api.start({
             to: {
@@ -76,7 +78,7 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
     return (
         <Marker longitude={buildingData.lng} latitude={buildingData.lat} anchor={'bottom'} style={{position: "absolute", zIndex: yIndex, pointerEvents: ("none" as React.CSSProperties["pointerEvents"])}}>
             <animated.div style={{...baseStyle, ...animation}}>
-                <MarkerLogo available={available} clicked={clicked} setClicked={setClicked} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingNum={buildingData.buildingNum} setHoveringOverMarker={setHoveringOverMarker}/>
+                <MarkerLogo available={available} clicked={clicked} setClicked={setClicked} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingNum={buildingData.buildingNum} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
             </animated.div>
         </Marker>
      );
