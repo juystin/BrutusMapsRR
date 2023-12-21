@@ -33,15 +33,14 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
         if (available) {
             api.start({
                 to: {
-                    strokeDashoffset: clicked && activeMarker === buildingNum ? "101" : "75",
+                    strokeDashoffset: clicked && activeMarker === buildingNum ? "101" : "90",
                     opacity: clicked && activeMarker === buildingNum ? 1 : 0
                 },
                 config: {
-                    tension: 100,
+                    tension: 120,
                     friction: 30,
                     mass: 1
-                },
-                delay: 192
+                }
             })
         }
     }, [clicked, activeMarker])

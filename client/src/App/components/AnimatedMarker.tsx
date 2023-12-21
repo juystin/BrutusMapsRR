@@ -47,7 +47,7 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
         } else {
             // Marker is active
             setMarkerClickCounter((count) => count + 1)
-            map!.jumpTo({center: [Number(buildingData.lng) + 0.01, buildingData.lat]})
+            map!.jumpTo({center: [Number(buildingData.lng) + 0.0055, buildingData.lat]})
         }
         api.start({
             to: {
