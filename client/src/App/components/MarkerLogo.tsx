@@ -17,8 +17,8 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
 
     const [animation, api] = useSpring(() => ({
         from: {
-            strokeDasharray: "10 50",
-            strokeDashoffset: "75",
+            strokeDasharray: "6 54",
+            strokeDashoffset: "80",
             opacity: 0
         }
     }))
@@ -33,7 +33,8 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
         if (available) {
             api.start({
                 to: {
-                    strokeDashoffset: clicked && activeMarker === buildingNum ? "101" : "90",
+                    strokeDashoffset: clicked && activeMarker === buildingNum ? "101" : "80",
+                    strokeDasharray: clicked && activeMarker === buildingNum ? "10 50" : "6 54",
                     opacity: clicked && activeMarker === buildingNum ? 1 : 0
                 },
                 config: {

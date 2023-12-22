@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { ModalTypes } from "../types/ModalTypes";
+import ClassroomModal from "./ClassroomModal";
 
 export interface ModalProps {
     type: ModalTypes,
@@ -10,6 +12,8 @@ export interface ModalProps {
 
 const Modal = ({ type, activeMarker, buildingData, availabilityData, setModalType }: ModalProps) => {
 
+    const [activeClassroom, setActiveClassroom] = useState<string | null>(null)
+    
     if (type === ModalTypes.ALL) {
         return ( 
             <div style={{position: "absolute", zIndex: "2", right: 0, width: "30%", height: "100%", background: "white"}}>
@@ -23,10 +27,13 @@ const Modal = ({ type, activeMarker, buildingData, availabilityData, setModalTyp
                 {
                     availabilityData.find((data: any) => data.buildingNum === activeMarker).classrooms.map((classroom: any) => {
                         return (
-                            <div style={{height: "80px", margin: "20px 50px", background: classroom.available ? "red" : "gray", borderRadius: "3px"}}
-                                onClick={() => setModalType(ModalTypes.CLASSROOM)}
+                            <div style={{height: "80px", margin: "20px 50px", background: classroom.available ? "red" : "gray", borderRadius: "3px", cursor: "pointer"}}
+                                onClick={() => {
+                                    setModalType(ModalTypes.CLASSROOM)
+                                    setActiveClassroom(classroom.facilityId)
+                                }}
                             >
-                                <h1 style={{color: "black"}}>{classroom.facilityId}</h1>
+                                <h1 style={{color: "black", cursor: "pointer"}}>{classroom.facilityId}</h1>
                             </div>
                         )
                     })
@@ -34,11 +41,9 @@ const Modal = ({ type, activeMarker, buildingData, availabilityData, setModalTyp
             </div>
         )
     } else if (type === ModalTypes.CLASSROOM) {
-        return ( 
-            <div style={{position: "absolute", zIndex: "2", right: 0, width: "30%", height: "100%", background: "white"}}>
-                <h1 style={{color: "black"}}>CLASSROOM</h1>
-            </div>
-        );
+        return (
+            <ClassroomModal activeClassroom={activeClassroom} />
+        )
     }
 }
  
