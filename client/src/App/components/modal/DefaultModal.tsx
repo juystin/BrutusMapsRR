@@ -12,12 +12,12 @@ const DefaultModal = ({buildingData, availabilityData}: DefaultModalProps) => {
                 {
                     buildingData.map((building: any) => {
                         return (
-                            <div style={{height: "80px", margin: "20px 50px", background: availabilityData.find((availBuilding: any) => availBuilding.buildingNum === building.buildingNum).available ? "#BA0C2F" : "#A7B1B7", borderRadius: "3px", cursor: "pointer"}}
+                            <div style={{minHeight: "80px", margin: "20px 50px", padding: "10px 10px", background: availabilityData.find((availBuilding: any) => availBuilding.buildingNum === building.buildingNum).available ? "#BA0C2F" : "#A7B1B7", borderRadius: "10px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center"}}
                                 onClick={() => {
                                     // sumn
                                 }}
                             >
-                                <h1 style={{color: "black", cursor: "pointer"}}>{building.buildingName}</h1>
+                                <h2 style={{cursor: "pointer", textAlign: "center"}}>{building.buildingName}</h2>
                             </div>
                         )
                     })

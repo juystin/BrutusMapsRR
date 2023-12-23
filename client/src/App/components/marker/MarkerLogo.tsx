@@ -72,7 +72,7 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
                     />
                 <circle
                     display="inline"
-                    fill="#FFFFFF"
+                    fill="#EEE5E9"
                     stroke="none"
                     strokeWidth="0.330729"
                     id="path2"

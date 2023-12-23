@@ -53,7 +53,7 @@ function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number,
                 justifyContent: "center"
             }}>
                 <h1 style={{
-                    color: "black",
+                    color: "#13070C",
                     fontSize: "125%"
                 }}>
                     {getTimeFromGridBox(i + (getMinutes(startTime) / interval), interval)}
@@ -72,7 +72,7 @@ function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number
                 gridRow: (i + 1 + offset).toString() + " / " + (i + 2 + offset).toString(),
                 gridColumn: "2 / 3",
                 height: "1px",
-                background: "black"
+                background: "#13070C"
             }} />
         )
     }
@@ -123,7 +123,7 @@ const ClassroomSchedule = ({ classroomData }: ClassroomScheduleProps) => {
                 return (
                     <SwiperSlide>
                         <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center"}}>
-                            <h1 style={{color: "black", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
+                            <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
                         </div>
                         <div style={{
                             display: "grid",

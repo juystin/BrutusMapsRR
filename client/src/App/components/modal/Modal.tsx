@@ -17,7 +17,7 @@ const Modal = ({ type, activeMarker, buildingData, availabilityData, setModalTyp
     const [activeClassroom, setActiveClassroom] = useState<string | null>(null)
 
     return (
-        <div style={{position: "absolute", zIndex: "2", right: 0, width: "40%", height: "100%", background: "white", overflow: "scroll"}}>
+        <div style={{position: "absolute", zIndex: "2", right: 0, width: "40%", height: "100%", background: "#EEE5E9", overflow: "scroll"}}>
             {
                 type === ModalTypes.ALL 
                 ?
@@ -25,7 +25,7 @@ const Modal = ({ type, activeMarker, buildingData, availabilityData, setModalTyp
                 :
                 type === ModalTypes.BUILDING
                 ?
-                <BuildingModal availabilityData={availabilityData} activeMarker={activeMarker} setModalType={setModalType} setActiveClassroom={setActiveClassroom} />
+                <BuildingModal buildingData={buildingData} availabilityData={availabilityData} activeMarker={activeMarker} setModalType={setModalType} setActiveClassroom={setActiveClassroom} />
                 :
                 type === ModalTypes.CLASSROOM
                 ?
