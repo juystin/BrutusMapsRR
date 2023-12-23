@@ -24,4 +24,10 @@ body {
 
 h1 {
 	margin: 0 0;
+	cursor: default;
+}
+
+h2 {
+	margin: 0 0;
+	cursor: default;
 }

@@ -27,7 +27,7 @@ const Modal = ({ type, activeMarker, buildingData, availabilityData, setModalTyp
                 {
                     availabilityData.find((data: any) => data.buildingNum === activeMarker).classrooms.map((classroom: any) => {
                         return (
-                            <div style={{height: "80px", margin: "20px 50px", background: classroom.available ? "red" : "gray", borderRadius: "3px", cursor: "pointer"}}
+                            <div style={{height: "80px", margin: "20px 50px", background: classroom.available ? "#BA0C2F" : "#A7B1B7", borderRadius: "3px", cursor: "pointer"}}
                                 onClick={() => {
                                     setModalType(ModalTypes.CLASSROOM)
                                     setActiveClassroom(classroom.facilityId)

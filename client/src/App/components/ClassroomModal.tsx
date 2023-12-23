@@ -27,8 +27,10 @@ const ClassroomModal = ({ activeClassroom }: ClassroomModalProps) => {
     }, [activeClassroom])
 
     return (
-        <div style={{position: "absolute", zIndex: "2", right: 0, width: "30%", height: "100%", background: "white", overflow: "scroll"}}>
-            <h1 style={{color: "black", cursor: "pointer"}}>{activeClassroom}</h1>
+        <div style={{position: "absolute", zIndex: "2", right: 0, width: "35%", height: "100%", background: "white", overflow: "scroll"}}>
+            <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center"}}>
+                <h1 style={{color: "black"}}>{activeClassroom}</h1>
+            </div>
             { classroomData ? <ClassroomSchedule classroomData={classroomData} /> : <></> }
         </div>
     );
