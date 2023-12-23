@@ -1,6 +1,6 @@
 import { animated, useSpring } from "@react-spring/web"
 import { useEffect } from "react"
-import { ModalTypes } from "../types/ModalTypes"
+import { ModalTypes } from "../../types/ModalTypes"
 
 export interface MarkerLogoProps {
     available: boolean,

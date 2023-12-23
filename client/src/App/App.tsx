@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import './App.css'
 import Map from 'react-map-gl/maplibre';
-import AnimatedMarker from './components/AnimatedMarker';
+import AnimatedMarker from './components/marker/AnimatedMarker';
 import axios from 'axios';
-import Modal from './components/Modal';
+import Modal from './components/modal/Modal';
 import { ModalTypes } from './types/ModalTypes';
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get('http://localhost:8000/api/getAvailability?day=wednesday&time=1200')
+		axios.get('http://localhost:8000/api/getAvailability?day=wednesday&time=1200&order=available')
 			.then(function (response) {
 				console.log(response)
 				setAvailabilityData(response.data)

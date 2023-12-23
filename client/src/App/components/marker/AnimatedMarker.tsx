@@ -2,7 +2,7 @@ import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { Marker, useMap } from "react-map-gl";
 import MarkerLogo from "./MarkerLogo";
-import { ModalTypes } from "../types/ModalTypes";
+import { ModalTypes } from "../../types/ModalTypes";
 
 export interface AnimatedMarkerProps {
     buildingData: any
