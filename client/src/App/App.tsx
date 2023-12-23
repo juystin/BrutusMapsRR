@@ -44,7 +44,7 @@ function App() {
 
 	return ( buildingData && availabilityData ?
 		<>
-			<Modal type={modalType} activeMarker={activeMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType}/>
+			<Modal type={modalType} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType}/>
 			<Map
 				initialViewState={{
 					longitude: buildingData.find((building: any) => building.buildingNum === "279").lng,

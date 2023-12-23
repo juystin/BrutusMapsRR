@@ -7,12 +7,13 @@ import BuildingModal from "./BuildingModal";
 export interface ModalProps {
     type: ModalTypes,
     activeMarker: number,
+    setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
     buildingData: any,
     availabilityData: any,
     setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>
 }
 
-const Modal = ({ type, activeMarker, buildingData, availabilityData, setModalType }: ModalProps) => {
+const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availabilityData, setModalType }: ModalProps) => {
 
     const [activeClassroom, setActiveClassroom] = useState<string | null>(null)
 
@@ -21,7 +22,7 @@ const Modal = ({ type, activeMarker, buildingData, availabilityData, setModalTyp
             {
                 type === ModalTypes.ALL 
                 ?
-                <DefaultModal buildingData={buildingData} availabilityData={availabilityData} />
+                <DefaultModal buildingData={buildingData} availabilityData={availabilityData} setActiveMarker={setActiveMarker} setModalType={setModalType}/>
                 :
                 type === ModalTypes.BUILDING
                 ?
