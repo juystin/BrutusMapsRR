@@ -21,3 +21,15 @@ body {
 	width: 100%;
 	background: purple;
 }
+
+h1 {
+	margin: 0 0;
+	cursor: default;
+	color: #EEE5E9;
+}
+
+h2 {
+	margin: 0 0;
+	cursor: default;
+	color: #EEE5E9;
+}

@@ -1,47 +1,52 @@
 import { animated, useSpring } from "@react-spring/web"
 import { useEffect } from "react"
+import { ModalTypes } from "../../types/ModalTypes"
 
 export interface MarkerLogoProps {
     available: boolean,
-    clicked: boolean,
-    setClicked: React.Dispatch<React.SetStateAction<boolean>>,
     activeMarker: number,
     setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
     buildingNum: number,
-    setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>
+    setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>,
+    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>
 }
 
-const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMarker, buildingNum, setHoveringOverMarker }: MarkerLogoProps) => {
+const MarkerLogo = ({ available, activeMarker, setActiveMarker, buildingNum, setHoveringOverMarker, setModalType }: MarkerLogoProps) => {
 
     const [animation, api] = useSpring(() => ({
         from: {
-            strokeDasharray: "10 50",
-            strokeDashoffset: "75",
+            strokeDasharray: "6 54",
+            strokeDashoffset: "80",
             opacity: 0
         }
     }))
 
     const handleClick = () => {
-        setClicked((state) => !state)
-        setActiveMarker(buildingNum)
+        if (activeMarker !== buildingNum) {
+            setActiveMarker(buildingNum)
+            setModalType(ModalTypes.BUILDING)
+        } else {
+            setActiveMarker(0)
+            setModalType(ModalTypes.ALL)
+        }
     }
 
     useEffect(() => {
         if (available) {
             api.start({
                 to: {
-                    strokeDashoffset: clicked && activeMarker === buildingNum ? "101" : "75",
-                    opacity: clicked && activeMarker === buildingNum ? 1 : 0
+                    strokeDashoffset: activeMarker === buildingNum ? "101" : "80",
+                    strokeDasharray: activeMarker === buildingNum ? "10 50" : "6 54",
+                    opacity: activeMarker === buildingNum ? 1 : 0
                 },
                 config: {
-                    tension: 100,
+                    tension: 120,
                     friction: 30,
                     mass: 1
-                },
-                delay: 192
+                }
             })
         }
-    }, [clicked, activeMarker])
+    }, [activeMarker])
 
     return ( 
         <svg
@@ -69,7 +74,7 @@ const MarkerLogo = ({ available, clicked, setClicked, activeMarker, setActiveMar
                     />
                 <circle
                     display="inline"
-                    fill="#FFFFFF"
+                    fill="#EEE5E9"
                     stroke="none"
                     strokeWidth="0.330729"
                     id="path2"

@@ -119,21 +119,44 @@ route.get('/getAvailability', function (req: Request, res: Response) {
                 facility_id
         `, params)
 
-        for (let classroomInfo of classroomAvailability) {
-            if (!classroomInfo.available) {
-                classrooms.push({
-                    facilityId: classroomInfo.facility_id,
-                    available: false,
-                    classEndsAt: classroomInfo.current_end,
-                    nextClassAt: classroomInfo.next_start
-                })
-            } else {
-                classrooms.push({
-                    facilityId: classroomInfo.facility_id,
-                    available: true,
-                    nextClassAt: classroomInfo.next_start
-                })
-                flag = true
+        if (typeof(req.query.order) === "string" && req.query.order === "available") {
+            for (let classroomInfo of classroomAvailability) {
+                if (classroomInfo.available) {
+                    classrooms.push({
+                        facilityId: classroomInfo.facility_id,
+                        available: true,
+                        nextClassAt: classroomInfo.next_start
+                    })
+                    flag = true
+                }
+            }
+            for (let classroomInfo of classroomAvailability) {
+                if (!classroomInfo.available) {
+                    classrooms.push({
+                        facilityId: classroomInfo.facility_id,
+                        available: false,
+                        classEndsAt: classroomInfo.current_end,
+                        nextClassAt: classroomInfo.next_start
+                    })
+                }
+            }
+        } else {
+            for (let classroomInfo of classroomAvailability) {
+                if (!classroomInfo.available) {
+                    classrooms.push({
+                        facilityId: classroomInfo.facility_id,
+                        available: false,
+                        classEndsAt: classroomInfo.current_end,
+                        nextClassAt: classroomInfo.next_start
+                    })
+                } else {
+                    classrooms.push({
+                        facilityId: classroomInfo.facility_id,
+                        available: true,
+                        nextClassAt: classroomInfo.next_start
+                    })
+                    flag = true
+                }
             }
         }
 
