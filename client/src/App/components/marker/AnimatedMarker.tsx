@@ -1,7 +1,7 @@
 import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { Marker, useMap } from "react-map-gl";
-import MarkerLogo from "./MarkerLogo";
+import MarkerIcon from "./MarkerIcon";
 import { ModalTypes } from "../../types/ModalTypes";
 
 export interface AnimatedMarkerProps {
@@ -74,7 +74,7 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
     return (
         <Marker longitude={buildingData.lng} latitude={buildingData.lat} anchor={'bottom'} style={{position: "absolute", zIndex: yIndex, pointerEvents: ("none" as React.CSSProperties["pointerEvents"])}}>
             <animated.div style={{...baseStyle, ...animation}}>
-                <MarkerLogo available={available} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingNum={buildingData.buildingNum} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
+                <MarkerIcon available={available} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingNum={buildingData.buildingNum} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
             </animated.div>
         </Marker>
      );

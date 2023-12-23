@@ -3,6 +3,7 @@ import { ModalTypes } from "../../types/ModalTypes";
 import ClassroomModal from "./ClassroomModal";
 import DefaultModal from "./DefaultModal";
 import BuildingModal from "./BuildingModal";
+import ArrowIcon from "./ArrowIcon";
 
 export interface ModalProps {
     type: ModalTypes,
@@ -16,9 +17,18 @@ export interface ModalProps {
 const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availabilityData, setModalType }: ModalProps) => {
 
     const [activeClassroom, setActiveClassroom] = useState<string | null>(null)
+    const [isOpen, setIsOpen] = useState<boolean>(true)
 
-    return (
-        <div style={{position: "absolute", zIndex: "2", right: 0, width: "40%", height: "100%", background: "#EEE5E9", overflow: "scroll"}}>
+    return ( isOpen ?
+        <div style={{position: "absolute", zIndex: "2", right: 0, width: "40%", height: "100%", display: "flex", alignItems: "center"}}>
+            <div style={{width: "5%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+                <div style={{height: "80px", width: "100%", background: "#BA0C2F", display: "flex", alignItems: "center", justifyContent: "center", borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px"}}
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    <ArrowIcon isOpen={isOpen}/>
+                </div>
+            </div>
+            <div style={{width: "95%", height: "100%", overflow: "scroll", background: "#EEE5E9"}}>
             {
                 type === ModalTypes.ALL 
                 ?
@@ -34,6 +44,17 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
                 :
                 <h1 style={{color: "black"}}>ALL</h1>
             }
+            </div>
+        </div>
+        :
+        <div style={{position: "absolute", zIndex: "2", right: 0, width: "40%", height: "100%", display: "flex", alignItems: "center", justifyContent: "flex-end"}}>
+            <div style={{width: "5%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+                <div style={{height: "80px", width: "100%", background: "#BA0C2F", display: "flex", alignItems: "center", justifyContent: "center", borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px"}}
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    <ArrowIcon isOpen={isOpen}/>
+                </div>
+            </div>
         </div>
     )
 }

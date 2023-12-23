@@ -27,12 +27,14 @@ const ClassroomModal = ({ activeClassroom }: ClassroomModalProps) => {
     }, [activeClassroom])
 
     return (
-        <>
+        <div style={{height: "100%", width: "100%"}} >
             <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", height: "80px", background: "#BA0C2F", marginBottom: "20px", borderBottomLeftRadius: "12px 12px", borderBottomRightRadius: "12px 12px"}}>
-                <h1>{activeClassroom}</h1>
-            </div>
-            { classroomData ? <ClassroomSchedule classroomData={classroomData} /> : <></> }
-        </>
+                 <h1>{activeClassroom}</h1>
+             </div>
+             <div style={{width: "100%", height: "auto"}}>
+                { classroomData ? <ClassroomSchedule classroomData={classroomData} /> : <></> }
+             </div>
+        </div>
     );
 }
  

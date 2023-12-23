@@ -111,34 +111,35 @@ export interface ClassroomScheduleProps {
 const ClassroomSchedule = ({ classroomData }: ClassroomScheduleProps) => {
     
     return ( 
-        <Swiper
-            spaceBetween={50}
-            onSlideChange={() => console.log('slide change')}
-            style={{
-                width: "100%"
-            }}
-            loop={true}
-        >
-            { classroomData.map((individualDayInfo: any) => {
-                return (
-                    <SwiperSlide>
-                        <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center"}}>
-                            <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
-                        </div>
-                        <div style={{
-                            display: "grid",
-                            gridTemplateRows: "repeat(" + (TOTAL_GRID_BOXES - END_REMOVAL) + ", " + TIME_BOX_SIZE * 6 + "px)",
-                            gridTemplateColumns: "1fr 4fr",
-                            paddingRight: "20px"
-                        }}>
-                            { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
-                            { loadClasses(START_TIME, END_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo) }
-                            { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE, SCHEDULE_OFFSET) }
-                        </div>
-                    </SwiperSlide>
-                )
-            }) }
-        </Swiper>
+            <Swiper
+                spaceBetween={50}
+                onSlideChange={() => console.log('slide change')}
+                style={{
+                    width: "100%",
+                    height: "100%"
+                }}
+                loop={true}
+            >
+                { classroomData.map((individualDayInfo: any) => {
+                    return (
+                        <SwiperSlide>
+                            <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center"}}>
+                                <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
+                            </div>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateRows: "repeat(" + (TOTAL_GRID_BOXES - END_REMOVAL) + ", " + TIME_BOX_SIZE * 6 + "px)",
+                                gridTemplateColumns: "1fr 4fr",
+                                paddingRight: "20px"
+                            }}>
+                                { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
+                                { loadClasses(START_TIME, END_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo) }
+                                { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE, SCHEDULE_OFFSET) }
+                            </div>
+                        </SwiperSlide>
+                    )
+                }) }
+            </Swiper>
      );
 }
  
