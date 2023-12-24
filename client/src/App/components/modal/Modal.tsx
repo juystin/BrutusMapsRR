@@ -4,6 +4,7 @@ import ClassroomModal from "./ClassroomModal";
 import DefaultModal from "./DefaultModal";
 import BuildingModal from "./BuildingModal";
 import ArrowIcon from "./ArrowIcon";
+import ClassModal from "./ClassModal";
 
 export interface ModalProps {
     type: ModalTypes,
@@ -17,6 +18,7 @@ export interface ModalProps {
 const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availabilityData, setModalType }: ModalProps) => {
 
     const [activeClassroom, setActiveClassroom] = useState<string | null>(null)
+    const [activeClass, setActiveClass] = useState<any>(null)
     const [isOpen, setIsOpen] = useState<boolean>(true)
 
     useEffect(() => {
@@ -46,7 +48,11 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
                 :
                 type === ModalTypes.CLASSROOM
                 ?
-                <ClassroomModal activeClassroom={activeClassroom} />
+                <ClassroomModal activeClassroom={activeClassroom} setModalType={setModalType} setActiveClass={setActiveClass}/>
+                :
+                type === ModalTypes.CLASS
+                ?
+                <ClassModal activeClass={activeClass}/>
                 :
                 <h1 style={{color: "black"}}>ALL</h1>
             }

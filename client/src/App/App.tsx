@@ -10,6 +10,7 @@ function App() {
 
 	const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 	const [buildingData, setBuildingData] = useState<any>(null);
+	const [buildingDataByLat, setBuildingDataByLat] = useState<any>(null);
 	const [availabilityData, setAvailabilityData] = useState<any>(null);
 
 	// Tracks click counts for Marker z-indexes. Allows for most recently clicked marker to be on top.
@@ -24,10 +25,18 @@ function App() {
 
 	useEffect(() => {
 		// Default marker order is by first-in placement. Knowing this, place markers bottom to top to prevent weird overlaps (i.e., place by latitude)
-		axios.get('http://localhost:8000/api/getBuildings?order=lat')
+		axios.get('http://localhost:8000/api/getBuildings')
 			.then(function (response) {
 				console.log(response)
 				setBuildingData(response.data)
+			})
+			.catch(function (error) {
+				console.log(error);
+			})
+			axios.get('http://localhost:8000/api/getBuildings?order=lat')
+			.then(function (response) {
+				console.log(response)
+				setBuildingDataByLat(response.data)
 			})
 			.catch(function (error) {
 				console.log(error);
@@ -65,7 +74,7 @@ function App() {
 			>
 				{ //mapLoaded ?
 					true ?
-					buildingData.map((buildingData: any) => {
+					buildingDataByLat.map((buildingData: any) => {
 						return (
 							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum).available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
 						)
