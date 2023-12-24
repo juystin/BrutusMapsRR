@@ -1,28 +1,26 @@
 import { Router, Request, Response } from "express";
 import Database from "../util/Database.js";
 
-const days: string[] = ["monday", "tuesday", "wednesday", "thursday", "friday"]
+const DAYS: string[] = ["monday", "tuesday", "wednesday", "thursday", "friday"]
 
 const route = Router();
 
 // SQLite doesn't allow for booleans to be stored. Change datatype of day to boolean.
-function changeDayType(res: any) {
-    let class_days: string[] = []
-    for (let day of days) {
-        if (res[day] == "1") {
-            class_days.push(day)
+function getDaysAndLocations(classInfo: any) {
+    let classDays = []
+    const facility = classInfo.facility
+    
+    for (let day of DAYS) {
+        if (classInfo[day] === "1") {
+            classDays.push(day)
         }
-        delete res[day]
+        delete classInfo[day]
     }
-    res.days = class_days
 
-    return res
-}
-
-function addInstructors(res: any, instructors: any) {
-    res.instructors = instructors
-
-    return res
+    return {
+        location: facility,
+        days: classDays
+    }
 }
 
 route.get('/getSectionInfo', function (req: Request, res: Response) {
@@ -33,7 +31,9 @@ route.get('/getSectionInfo', function (req: Request, res: Response) {
         return;
     }
 
-    let result = []
+    // There may be two records tied to each classNo/sectionNo combo,
+    // due to class locations changing throughout the week
+    let daysAndLocations = []
 
     const classesUnparsed = db.select(`
         SELECT building_num as buildingNum, 
@@ -65,10 +65,10 @@ route.get('/getSectionInfo', function (req: Request, res: Response) {
         WHERE class_number = ? AND section_number = ?`, [req.query.class_num, req.query.section_num])
 
     for (let classInfo of classesUnparsed) {
-        result.push(addInstructors(changeDayType(classInfo), instructors))
+        daysAndLocations.push(getDaysAndLocations(classInfo))
     }
 
-    res.json(result)
+    res.json({...classesUnparsed.at(0), instructors: instructors, daysAndLocations: daysAndLocations})
 });
 
 export default route;
