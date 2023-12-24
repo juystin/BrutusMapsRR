@@ -16,7 +16,7 @@ const ArrowIcon = ({ isOpen }: ArrowIconProps) => {
                 stroke="#EEE5E9"
                 strokeWidth="18"
                 strokeDasharray="none"
-                transform={isOpen ? undefined : "scale(-1, 1) translate(-135.46666, 0)"}
+                transform={isOpen ? "scale(-1, 1) translate(-135.46666, 0)" : undefined}
             />
         </svg>
      );
