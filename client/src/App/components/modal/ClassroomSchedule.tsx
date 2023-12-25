@@ -1,5 +1,9 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { Mousewheel } from "swiper/modules";
 import 'swiper/css';
+import { ModalType } from '../../types/ModalType';
+import ActiveClassType from '../../types/ActiveClassType';
+import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
 
 function getMinutes(time: string) {
     return (Number(time.substring(0, 2)) * 60) + Number(time.substring(3, 5))
@@ -64,7 +68,7 @@ function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number,
     return timeBoxes
 }
 
-function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number, interval: number, size: number, offset: number) {
+function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number, interval: number, offset: number) {
     let timeBreaks: any = []
     for (let i = getGridBoxFromTime(startTime, startTime, interval); i < getGridBoxFromTime(endTime, startTime, interval); i += (timeMarkings / interval)) {
         timeBreaks.push(
@@ -79,24 +83,31 @@ function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number
     return timeBreaks
 }
 
-function loadClasses(startTime: string, endTime: string, interval: number, offset: number, individualDayInfo: any) {
+function loadClasses(startTime: string, interval: number, offset: number, individualDayInfo: any, setModalType: React.Dispatch<React.SetStateAction<ModalType>>, setActiveClass: React.Dispatch<React.SetStateAction<any>>) {
     return individualDayInfo.schedule.map((classInfo: any) => {
         return (
             <div style={{
-                gridRow: (getGridBoxFromTime(classInfo.start, startTime, interval) + 1 + offset).toString() + " / " + (getGridBoxFromTime(classInfo.end, startTime, interval) + 1 + offset).toString(),
-                gridColumn: "2 / 3",
-                background: "#BA0C2F",
-                height: "100%",
-                position: "relative",
-                zIndex: 2,
-                borderRadius: "12px",
-                margin: "0px 10px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-                cursor: "pointer"
-            }}>
+                    gridRow: (getGridBoxFromTime(classInfo.start, startTime, interval) + 1 + offset).toString() + " / " + (getGridBoxFromTime(classInfo.end, startTime, interval) + 1 + offset).toString(),
+                    gridColumn: "2 / 3",
+                    background: "#BA0C2F",
+                    height: "100%",
+                    position: "relative",
+                    zIndex: 2,
+                    borderRadius: "12px",
+                    margin: "0px 10px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    cursor: "pointer"
+                }}
+                onClick={() => {
+                    setModalType(ModalType.CLASS)
+                    setActiveClass({
+                        classNo: classInfo.classNo,
+                        sectionNo: classInfo.sectionNo
+                    })
+                }}>
                 <h1 style={{cursor: "pointer"}}>{classInfo.subject + " " + classInfo.code}</h1>
                 <h2 style={{cursor: "pointer"}}>{classInfo.start + " - " + classInfo.end}</h2>
             </div>
@@ -105,22 +116,29 @@ function loadClasses(startTime: string, endTime: string, interval: number, offse
 }
 
 export interface ClassroomScheduleProps {
-    classroomData: any
+    classroomData: ClassroomScheduleType[],
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>,
+    setActiveClass: React.Dispatch<React.SetStateAction<ActiveClassType | null>>
 }
 
-const ClassroomSchedule = ({ classroomData }: ClassroomScheduleProps) => {
+const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: ClassroomScheduleProps) => {
     
     return ( 
             <Swiper
+                modules={[Mousewheel]}
                 spaceBetween={50}
                 onSlideChange={() => console.log('slide change')}
                 style={{
                     width: "100%",
                     height: "100%"
                 }}
+                mousewheel={{
+                    forceToAxis: true
+                }}
+                direction="horizontal"
                 loop={true}
             >
-                { classroomData.map((individualDayInfo: any) => {
+                { classroomData.map((individualDayInfo: ClassroomScheduleType) => {
                     return (
                         <SwiperSlide>
                             <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center"}}>
@@ -133,8 +151,8 @@ const ClassroomSchedule = ({ classroomData }: ClassroomScheduleProps) => {
                                 paddingRight: "20px"
                             }}>
                                 { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
-                                { loadClasses(START_TIME, END_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo) }
-                                { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE, SCHEDULE_OFFSET) }
+                                { loadClasses(START_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass) }
+                                { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, SCHEDULE_OFFSET) }
                             </div>
                         </SwiperSlide>
                     )

@@ -1,10 +1,12 @@
-import { ModalTypes } from "../../types/ModalTypes";
+import { ModalType } from "../../types/ModalType";
+import BuildingType from "../../../../../types/getBuildingsType"
+import AvailabilityType from "../../../../../types/getAvailabilityType"
 
 export interface DefaultModalProps {
-    buildingData: any,
-    availabilityData: any,
-    setActiveMarker: React.Dispatch<React.SetStateAction<number>>
-    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>
+    buildingData: BuildingType[],
+    availabilityData: AvailabilityType[],
+    setActiveMarker: React.Dispatch<React.SetStateAction<string | null>>
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>
 }
 
 const DefaultModal = ({buildingData, availabilityData, setActiveMarker, setModalType}: DefaultModalProps) => {
@@ -14,12 +16,12 @@ const DefaultModal = ({buildingData, availabilityData, setActiveMarker, setModal
                 <h1>BrutusMaps</h1>
             </div>
                 {
-                    buildingData.map((building: any) => {
+                    buildingData.map((building: BuildingType) => {
                         return (
-                            <div style={{minHeight: "80px", margin: "20px 50px", padding: "10px 10px", background: availabilityData.find((availBuilding: any) => availBuilding.buildingNum === building.buildingNum).available ? "#BA0C2F" : "#A7B1B7", borderRadius: "10px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center"}}
+                            <div style={{minHeight: "80px", margin: "20px 50px", padding: "10px 10px", background: availabilityData.find((availBuilding: any) => availBuilding.buildingNum === building.buildingNum)!.available ? "#BA0C2F" : "#A7B1B7", borderRadius: "10px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center"}}
                                 onClick={() => {
                                     setActiveMarker(building.buildingNum)
-                                    setModalType(ModalTypes.BUILDING)
+                                    setModalType(ModalType.BUILDING)
                                 }}
                             >
                                 <h2 style={{cursor: "pointer", textAlign: "center"}}>{building.buildingName}</h2>

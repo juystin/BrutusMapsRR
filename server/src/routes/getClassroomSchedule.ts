@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
-import Database from "../util/Database.js";
+import Database from "../util/Database";
+import getClassroomScheduleType from "../../../types/getClassroomScheduleType"
 
 const days: string[] = ["monday", "tuesday", "wednesday", "thursday", "friday"]
 
@@ -13,7 +14,7 @@ route.get('/getClassroomSchedule', function (req: Request, res: Response) {
         return;
     }
 
-    const result = []
+    const result: getClassroomScheduleType[] = []
 
     for (let day of days) {
         let schedule = db.select(`

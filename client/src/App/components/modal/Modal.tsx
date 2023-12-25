@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
-import { ModalTypes } from "../../types/ModalTypes";
+import { ModalType } from "../../types/ModalType";
 import ClassroomModal from "./ClassroomModal";
 import DefaultModal from "./DefaultModal";
 import BuildingModal from "./BuildingModal";
 import ArrowIcon from "./ArrowIcon";
+import ClassModal from "./ClassModal";
+import BuildingsType from "../../../../../types/getBuildingsType"
+import AvailabilityType from "../../../../../types/getAvailabilityType"
+import ActiveClassType from "../../types/ActiveClassType";
 
 export interface ModalProps {
-    type: ModalTypes,
-    activeMarker: number,
-    setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
-    buildingData: any,
-    availabilityData: any,
-    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>
+    type: ModalType,
+    activeMarker: string | null,
+    setActiveMarker: React.Dispatch<React.SetStateAction<string | null>>,
+    buildingData: BuildingsType[],
+    availabilityData: AvailabilityType[],
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>
 }
 
 const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availabilityData, setModalType }: ModalProps) => {
 
     const [activeClassroom, setActiveClassroom] = useState<string | null>(null)
+    const [activeClass, setActiveClass] = useState<ActiveClassType | null>(null)
     const [isOpen, setIsOpen] = useState<boolean>(true)
 
     useEffect(() => {
-        if (activeMarker !== 0) {
+        if (activeMarker !== null) {
             setIsOpen(true)
         }
     }, [activeMarker])
@@ -36,17 +41,21 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
             </div>
             <div style={{width: "95%", height: "100%", overflow: "scroll", background: "#EEE5E9", pointerEvents: "auto"}}>
             {
-                type === ModalTypes.ALL 
+                type === ModalType.ALL 
                 ?
                 <DefaultModal buildingData={buildingData} availabilityData={availabilityData} setActiveMarker={setActiveMarker} setModalType={setModalType}/>
                 :
-                type === ModalTypes.BUILDING
+                type === ModalType.BUILDING
                 ?
                 <BuildingModal buildingData={buildingData} availabilityData={availabilityData} activeMarker={activeMarker} setModalType={setModalType} setActiveClassroom={setActiveClassroom} />
                 :
-                type === ModalTypes.CLASSROOM
+                type === ModalType.CLASSROOM
                 ?
-                <ClassroomModal activeClassroom={activeClassroom} />
+                <ClassroomModal activeClassroom={activeClassroom} setModalType={setModalType} setActiveClass={setActiveClass}/>
+                :
+                type === ModalType.CLASS
+                ?
+                <ClassModal activeClass={activeClass}/>
                 :
                 <h1 style={{color: "black"}}>ALL</h1>
             }

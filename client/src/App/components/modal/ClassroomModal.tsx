@@ -1,23 +1,25 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import ClassroomSchedule from "./ClassroomSchedule";
+import { ModalType } from "../../types/ModalType";
+import ActiveClassType from "../../types/ActiveClassType";
+import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
 
 export interface ClassroomModalProps {
-    activeClassroom: string | null
+    activeClassroom: string | null,
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>,
+    setActiveClass: React.Dispatch<React.SetStateAction<ActiveClassType | null>>
 }
 
-const days: string[] = ["monday", "tuesday", "wednesday", "thursday", "friday"]
+const ClassroomModal = ({ activeClassroom, setModalType, setActiveClass }: ClassroomModalProps) => {
 
-const ClassroomModal = ({ activeClassroom }: ClassroomModalProps) => {
-
-    const [classroomData, setClassroomData] = useState<any>(null)
+    const [classroomData, setClassroomData] = useState<ClassroomScheduleType[] | null>(null)
 
     useEffect(() => {
         if (activeClassroom) {
             setClassroomData(null);
             axios.get('http://localhost:8000/api/getClassroomSchedule?facility=' + activeClassroom)
 			.then(function (response) {
-                console.log(response.data)
 				setClassroomData(response.data)
 			})
 			.catch(function (error) {
@@ -32,7 +34,7 @@ const ClassroomModal = ({ activeClassroom }: ClassroomModalProps) => {
                  <h1>{activeClassroom}</h1>
              </div>
              <div style={{width: "100%", height: "auto"}}>
-                { classroomData ? <ClassroomSchedule classroomData={classroomData} /> : <></> }
+                { classroomData ? <ClassroomSchedule classroomData={classroomData} setModalType={setModalType} setActiveClass={setActiveClass}/> : <></> }
              </div>
         </div>
     );

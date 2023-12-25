@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
-import Database from "../util/Database.js";
+import Database from "../util/Database";
+import getAvailabilityType from "../../../types/getAvailabilityType"
 
 function isStringNumericalInteger(value: any) {
     return typeof value === "string" && /^[\-+]?[1-9]{1}\d+$|^[\-+]?0$/.test(value);
@@ -39,7 +40,7 @@ route.get('/getAvailability', function (req: Request, res: Response) {
 
     const buildingNums = db.select("SELECT building_num FROM buildings ORDER BY building_num");
 
-    let result: any[] = [];
+    let result: getAvailabilityType[] = [];
 
     for (let res of buildingNums) {
         let params = {

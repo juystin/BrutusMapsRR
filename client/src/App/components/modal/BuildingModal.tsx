@@ -1,10 +1,12 @@
-import { ModalTypes } from "../../types/ModalTypes";
+import { ModalType } from "../../types/ModalType";
+import BuildingType from "../../../../../types/getBuildingsType"
+import AvailabilityType, { ClassroomType } from "../../../../../types/getAvailabilityType"
 
 export interface BuildingModalProps {
-    buildingData: any,
-    availabilityData: any,
-    activeMarker: any,
-    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>,
+    buildingData: BuildingType[],
+    availabilityData: AvailabilityType[],
+    activeMarker: string | null,
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>,
     setActiveClassroom: React.Dispatch<React.SetStateAction<string | null>>
 }
 
@@ -12,14 +14,14 @@ const BuildingModal = ({ buildingData, availabilityData, activeMarker, setModalT
     return ( 
         <>
             <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", flexDirection: "column", height: "80px", background: "#BA0C2F", borderBottomLeftRadius: "12px 12px", borderBottomRightRadius: "12px 12px"}}>
-                <h1 style={{textAlign: "center"}}>{ buildingData.find((building: any) => building.buildingNum === activeMarker).buildingName }</h1>
+                <h1 style={{textAlign: "center"}}>{ buildingData.find((building: any) => building.buildingNum === activeMarker)!.buildingName }</h1>
             </div>
             {
-                availabilityData.find((data: any) => data.buildingNum === activeMarker).classrooms.map((classroom: any) => {
+                availabilityData.find((data: AvailabilityType) => data.buildingNum === activeMarker)!.classrooms.map((classroom: ClassroomType) => {
                     return (
                         <div style={{height: "80px", margin: "20px 50px", background: classroom.available ? "#BA0C2F" : "#A7B1B7", borderRadius: "8px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center"}}
                             onClick={() => {
-                                setModalType(ModalTypes.CLASSROOM)
+                                setModalType(ModalType.CLASSROOM)
                                 setActiveClassroom(classroom.facilityId)
                             }}
                         >
