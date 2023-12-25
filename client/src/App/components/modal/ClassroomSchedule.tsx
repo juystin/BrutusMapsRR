@@ -1,4 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { Mousewheel } from "swiper/modules";
 import 'swiper/css';
 import { ModalType } from '../../types/ModalType';
 import ActiveClassType from '../../types/ActiveClassType';
@@ -124,12 +125,17 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
     
     return ( 
             <Swiper
+                modules={[Mousewheel]}
                 spaceBetween={50}
                 onSlideChange={() => console.log('slide change')}
                 style={{
                     width: "100%",
                     height: "100%"
                 }}
+                mousewheel={{
+                    forceToAxis: true
+                }}
+                direction="horizontal"
                 loop={true}
             >
                 { classroomData.map((individualDayInfo: ClassroomScheduleType) => {
