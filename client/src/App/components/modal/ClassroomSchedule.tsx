@@ -1,6 +1,8 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import { ModalTypes } from '../../types/ModalTypes';
+import { ModalType } from '../../types/ModalType';
+import ActiveClassType from '../../types/ActiveClassType';
+import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
 
 function getMinutes(time: string) {
     return (Number(time.substring(0, 2)) * 60) + Number(time.substring(3, 5))
@@ -65,7 +67,7 @@ function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number,
     return timeBoxes
 }
 
-function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number, interval: number, size: number, offset: number) {
+function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number, interval: number, offset: number) {
     let timeBreaks: any = []
     for (let i = getGridBoxFromTime(startTime, startTime, interval); i < getGridBoxFromTime(endTime, startTime, interval); i += (timeMarkings / interval)) {
         timeBreaks.push(
@@ -80,7 +82,7 @@ function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number
     return timeBreaks
 }
 
-function loadClasses(startTime: string, endTime: string, interval: number, offset: number, individualDayInfo: any, setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>, setActiveClass: React.Dispatch<React.SetStateAction<any>>) {
+function loadClasses(startTime: string, interval: number, offset: number, individualDayInfo: any, setModalType: React.Dispatch<React.SetStateAction<ModalType>>, setActiveClass: React.Dispatch<React.SetStateAction<any>>) {
     return individualDayInfo.schedule.map((classInfo: any) => {
         return (
             <div style={{
@@ -99,7 +101,7 @@ function loadClasses(startTime: string, endTime: string, interval: number, offse
                     cursor: "pointer"
                 }}
                 onClick={() => {
-                    setModalType(ModalTypes.CLASS)
+                    setModalType(ModalType.CLASS)
                     setActiveClass({
                         classNo: classInfo.classNo,
                         sectionNo: classInfo.sectionNo
@@ -113,9 +115,9 @@ function loadClasses(startTime: string, endTime: string, interval: number, offse
 }
 
 export interface ClassroomScheduleProps {
-    classroomData: any,
-    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>,
-    setActiveClass: React.Dispatch<React.SetStateAction<any>>
+    classroomData: ClassroomScheduleType[],
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>,
+    setActiveClass: React.Dispatch<React.SetStateAction<ActiveClassType | null>>
 }
 
 const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: ClassroomScheduleProps) => {
@@ -130,7 +132,7 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                 }}
                 loop={true}
             >
-                { classroomData.map((individualDayInfo: any) => {
+                { classroomData.map((individualDayInfo: ClassroomScheduleType) => {
                     return (
                         <SwiperSlide>
                             <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center"}}>
@@ -143,8 +145,8 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                                 paddingRight: "20px"
                             }}>
                                 { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
-                                { loadClasses(START_TIME, END_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass) }
-                                { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE, SCHEDULE_OFFSET) }
+                                { loadClasses(START_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass) }
+                                { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, SCHEDULE_OFFSET) }
                             </div>
                         </SwiperSlide>
                     )

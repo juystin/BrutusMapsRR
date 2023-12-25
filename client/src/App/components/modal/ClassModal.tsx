@@ -1,9 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import SectionInfoType, { InstructorType, DaysAndLocationType } from "../../../../../types/getSectionInfoType"
+import ActiveClassType from "../../types/ActiveClassType";
+
+export interface ClassModalProps {
+    activeClass: ActiveClassType
+}
 
 const ClassModal = ({ activeClass }: any) => {
     
-    const [classData, setClassData] = useState<any>(null)
+    const [classData, setClassData] = useState<SectionInfoType | null>(null)
 
     useEffect(() => {
         if (activeClass) {
@@ -34,14 +40,14 @@ const ClassModal = ({ activeClass }: any) => {
                         </div>
                         <div style={{gridRow: "2 / 3", width: "100%", height: "100%", border: "2px solid #BA0C2F", boxSizing: "border-box", padding: "2px 8px 6px 8px"}}>
                             {
-                                classData.daysAndLocations.map((daysAndLocation: any, i: number) => {
+                                classData.daysAndLocations.map((daysAndLocation: DaysAndLocationType, i: number) => {
                                     return (
                                         daysAndLocation.days.map((day: string, j: number) => {
 
                                             let k = j + i
 
                                             return (
-                                                <div style={{display: "grid", gridTemplateColumns: "25% 45% 15% 15%", width: "100%", height: "min-content"}}>
+                                                <div style={{display: "grid", gridTemplateColumns: "30% 40% 15% 15%", width: "100%", height: "min-content"}}>
                                                     <div style={{gridColumn: "1 / 2", display: "flex", alignItems: "center", justifyContent: "flex-start", padding: "4px 16px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
                                                         <h3 style={{textTransform: "capitalize"}}>{day}</h3>
                                                     </div>
@@ -68,18 +74,18 @@ const ClassModal = ({ activeClass }: any) => {
                         </div>
                         <div style={{gridRow: "2 / 3", width: "100%", height: "100%", border: "2px solid #BA0C2F", boxSizing: "border-box", padding: "2px 8px 6px 8px"}}>
                             {
-                                        classData.instructors.map((instructor: any, i: number) => {
-                                            return (
-                                                <div style={{display: "grid", gridTemplateColumns: "2fr 2fr", width: "100%", height: "min-content"}}>
-                                                    <div style={{gridColumn: "1 / 2", display: "flex", alignItems: "center", justifyContent: "flex-start", padding: "4px 16px", background: i % 2 === 0 ? undefined : "gray"}}>
-                                                        <h3>{instructor.name}</h3>
-                                                    </div>
-                                                    <div style={{gridColumn: "2 / 3", display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "4px 16px", background: i % 2 === 0 ? undefined : "gray"}}>
-                                                        <h3>{instructor.email}</h3>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
+                                classData.instructors.map((instructor: InstructorType, i: number) => {
+                                    return (
+                                        <div style={{display: "grid", gridTemplateColumns: "2fr 2fr", width: "100%", height: "min-content"}}>
+                                            <div style={{gridColumn: "1 / 2", display: "flex", alignItems: "center", justifyContent: "flex-start", padding: "4px 16px", background: i % 2 === 0 ? undefined : "gray"}}>
+                                                <h3>{instructor.name}</h3>
+                                            </div>
+                                            <div style={{gridColumn: "2 / 3", display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "4px 16px", background: i % 2 === 0 ? undefined : "gray"}}>
+                                                <h3>{instructor.email}</h3>
+                                            </div>
+                                        </div>
+                                    )
+                                })
                                     
                             }
                         </div>

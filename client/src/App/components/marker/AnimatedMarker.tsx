@@ -2,17 +2,18 @@ import { animated, useSpring } from "@react-spring/web";
 import { useEffect, useState } from "react";
 import { Marker, useMap } from "react-map-gl";
 import MarkerIcon from "./MarkerIcon";
-import { ModalTypes } from "../../types/ModalTypes";
+import { ModalType } from "../../types/ModalType";
+import BuildingType from "../../../../../types/getBuildingsType"
 
 export interface AnimatedMarkerProps {
-    buildingData: any
+    buildingData: BuildingType
     available: boolean,
     markerClickCounter: number,
     setMarkerClickCounter: React.Dispatch<React.SetStateAction<number>>,
-    activeMarker: number,
-    setActiveMarker: React.Dispatch<React.SetStateAction<number>>,
+    activeMarker: string | null,
+    setActiveMarker: React.Dispatch<React.SetStateAction<string | null>>,
     setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>,
-    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>
 }
 
 const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker, setHoveringOverMarker, setModalType}: AnimatedMarkerProps) => {
@@ -43,7 +44,7 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
         if (activeMarker === buildingData.buildingNum) {
             // Marker is active
             setMarkerClickCounter((count) => count + 1)
-            map!.jumpTo({center: [Number(buildingData.lng) + 0.0055, buildingData.lat]})
+            map!.jumpTo({center: [Number(buildingData.lng) + 0.0055, Number(buildingData.lat)]})
         }
         api.start({
             to: {
@@ -72,7 +73,7 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
     }, [markerClickCounter])
 
     return (
-        <Marker longitude={buildingData.lng} latitude={buildingData.lat} anchor={'bottom'} style={{position: "absolute", zIndex: yIndex, pointerEvents: ("none" as React.CSSProperties["pointerEvents"])}}>
+        <Marker longitude={Number(buildingData.lng)} latitude={Number(buildingData.lat)} anchor={'bottom'} style={{position: "absolute", zIndex: yIndex, pointerEvents: ("none" as React.CSSProperties["pointerEvents"])}}>
             <animated.div style={{...baseStyle, ...animation}}>
                 <MarkerIcon available={available} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingNum={buildingData.buildingNum} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
             </animated.div>

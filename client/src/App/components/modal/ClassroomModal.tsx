@@ -1,19 +1,19 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import ClassroomSchedule from "./ClassroomSchedule";
-import { ModalTypes } from "../../types/ModalTypes";
+import { ModalType } from "../../types/ModalType";
+import ActiveClassType from "../../types/ActiveClassType";
+import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
 
 export interface ClassroomModalProps {
     activeClassroom: string | null,
-    setModalType: React.Dispatch<React.SetStateAction<ModalTypes>>,
-    setActiveClass: React.Dispatch<React.SetStateAction<any>>
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>,
+    setActiveClass: React.Dispatch<React.SetStateAction<ActiveClassType | null>>
 }
-
-const days: string[] = ["monday", "tuesday", "wednesday", "thursday", "friday"]
 
 const ClassroomModal = ({ activeClassroom, setModalType, setActiveClass }: ClassroomModalProps) => {
 
-    const [classroomData, setClassroomData] = useState<any>(null)
+    const [classroomData, setClassroomData] = useState<ClassroomScheduleType[] | null>(null)
 
     useEffect(() => {
         if (activeClassroom) {

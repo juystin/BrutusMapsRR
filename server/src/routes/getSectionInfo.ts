@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
-import Database from "../util/Database.js";
+import Database from "../util/Database";
+import getSectionInfoType from "../../../types/getSectionInfoType"
 
 const DAYS: string[] = ["monday", "tuesday", "wednesday", "thursday", "friday"]
 
@@ -30,6 +31,8 @@ route.get('/getSectionInfo', function (req: Request, res: Response) {
         res.send("Provide a class_num and a section_num")
         return;
     }
+
+    let result: getSectionInfoType;
 
     // There may be two records tied to each classNo/sectionNo combo,
     // due to class locations changing throughout the week
@@ -68,7 +71,9 @@ route.get('/getSectionInfo', function (req: Request, res: Response) {
         daysAndLocations.push(getDaysAndLocations(classInfo))
     }
 
-    res.json({...classesUnparsed.at(0), instructors: instructors, daysAndLocations: daysAndLocations})
+    result = {...classesUnparsed.at(0), instructors: instructors, daysAndLocations: daysAndLocations}
+
+    res.json(result)
 });
 
 export default route;
