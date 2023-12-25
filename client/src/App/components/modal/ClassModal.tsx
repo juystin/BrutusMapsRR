@@ -27,6 +27,64 @@ const ClassModal = ({ activeClass }: any) => {
              <div style={{maxWidth: "100%", height: "auto", padding: "0px 20px"}}>
                 <h1 style={{color: "#13070C"}}>{classData.title}</h1>
                 <p style={{color: "#13070C"}}>{classData.description}</p>
+                <div style={{display: "grid", gridTemplateRows: "min-content min-content", gap: "20px"}}>
+                    <div style={{width: "100%", display: "grid", gridTemplateRows: "40px min-content", margin: "0px 0px"}}>
+                        <div style={{gridRow: "1 / 2", width: "100%", height: "100%", borderTopLeftRadius: "12px", borderTopRightRadius: "12px", background: "#BA0C2F", display: "flex", alignItems: "flex-end"}}>
+                            <h2 style={{marginLeft: "12px", marginBottom: "6px"}}>Schedule</h2>
+                        </div>
+                        <div style={{gridRow: "2 / 3", width: "100%", height: "100%", border: "2px solid #BA0C2F", boxSizing: "border-box", padding: "4px 12px"}}>
+                            {
+                                classData.daysAndLocations.map((daysAndLocation: any, i: number) => {
+                                    return (
+                                        daysAndLocation.days.map((day: string, j: number) => {
+
+                                            let k = j + i
+
+                                            return (
+                                                <div style={{display: "grid", gridTemplateColumns: "30% 40% 15% 15%", width: "100%", height: "min-content"}}>
+                                                    <div style={{gridColumn: "1 / 2", display: "flex", alignItems: "center", justifyContent: "flex-start", padding: "4px 8px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
+                                                        <h3 style={{textTransform: "capitalize"}}>{day}</h3>
+                                                    </div>
+                                                    <div style={{gridColumn: "2 / 3", display: "flex", alignItems: "center", justifyContent: "center", padding: "4px 8px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
+                                                        <h3>{daysAndLocation.location}</h3>
+                                                    </div>
+                                                    <div style={{gridColumn: "3 / 4", display: "flex", alignItems: "center", justifyContent: "center", padding: "4px 8px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
+                                                        <h3>{classData.start}</h3>
+                                                    </div>
+                                                    <div style={{gridColumn: "4 / 5", display: "flex", alignItems: "center", justifyContent: "center", padding: "4px 8px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
+                                                        <h3>{classData.end}</h3>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                    <div style={{width: "100%", display: "grid", gridTemplateRows: "40px min-content"}}>
+                        <div style={{gridRow: "1 / 2", width: "100%", height: "100%", borderTopLeftRadius: "12px", borderTopRightRadius: "12px", background: "#BA0C2F", display: "flex", alignItems: "flex-end"}}>
+                            <h2 style={{marginLeft: "12px", marginBottom: "6px"}}>Instructors</h2>
+                        </div>
+                        <div style={{gridRow: "2 / 3", width: "100%", height: "100%", border: "2px solid #BA0C2F", boxSizing: "border-box", padding: "4px 12px"}}>
+                            {
+                                        classData.instructors.map((instructor: any, i: number) => {
+                                            return (
+                                                <div style={{display: "grid", gridTemplateColumns: "2fr 3fr", width: "100%", height: "min-content"}}>
+                                                    <div style={{gridColumn: "1 / 2", display: "flex", alignItems: "center", justifyContent: "flex-start", padding: "4px 8px", background: i % 2 === 0 ? undefined : "gray"}}>
+                                                        <h3>{instructor.name}</h3>
+                                                    </div>
+                                                    <div style={{gridColumn: "2 / 3", display: "flex", alignItems: "center", justifyContent: "center", padding: "4px 8px", background: i % 2 === 0 ? undefined : "gray"}}>
+                                                        <h3>{instructor.email}</h3>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    
+                            }
+                        </div>
+                    </div>
+                </div>
              </div>
         </div>
      : <h1>Loading...</h1>);
