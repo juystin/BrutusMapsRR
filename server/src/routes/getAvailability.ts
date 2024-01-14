@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
-import Database from "../util/Database";
-import getAvailabilityType from "../../../types/getAvailabilityType"
+import Database from "../util/Database.js";
+import getAvailabilityType from "../../../types/getAvailabilityType.js"
 
 function isStringNumericalInteger(value: any) {
     return typeof value === "string" && /^[\-+]?[1-9]{1}\d+$|^[\-+]?0$/.test(value);

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
-import Database from "../util/Database";
-import getBuildingsType from "../../../types/getBuildingsType"
+import Database from "../util/Database.js";
+import getBuildingsType from "../../../types/getBuildingsType.js"
 
 const route = Router();
 

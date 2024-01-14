@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
-import Database from "../util/Database";
-import getSectionInfoType from "../../../types/getSectionInfoType"
+import Database from "../util/Database.js";
+import getSectionInfoType from "../../../types/getSectionInfoType.js"
 
 const DAYS: string[] = ["monday", "tuesday", "wednesday", "thursday", "friday"]
 

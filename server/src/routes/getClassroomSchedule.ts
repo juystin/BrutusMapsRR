@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
-import Database from "../util/Database";
-import getClassroomScheduleType from "../../../types/getClassroomScheduleType"
+import Database from "../util/Database.js";
+import getClassroomScheduleType from "../../../types/getClassroomScheduleType.js"
 
 const days: string[] = ["monday", "tuesday", "wednesday", "thursday", "friday"]
 
