@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import SectionInfoType, { InstructorType, DaysAndLocationType } from "../../../../../types/getSectionInfoType"
 import ActiveClassType from "../../types/ActiveClassType";
+import LoadingIcon from "../loading/LoadingIcon";
 
 export interface ClassModalProps {
     activeClass: ActiveClassType
@@ -10,9 +11,11 @@ export interface ClassModalProps {
 const ClassModal = ({ activeClass }: any) => {
     
     const [classData, setClassData] = useState<SectionInfoType | null>(null)
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         if (activeClass) {
+            setLoading(true)
             setClassData(null);
             axios.get('http://localhost:8000/api/getSectionInfo?class_num=' + activeClass.classNo + '&section_num=' + activeClass.sectionNo)
 			.then(function (response) {
@@ -25,7 +28,7 @@ const ClassModal = ({ activeClass }: any) => {
         }
     }, [activeClass])
     
-    return ( classData ?
+    return ( classData && !loading ?
         <div style={{height: "100%", width: "100%"}} >
             <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", height: "80px", background: "#BA0C2F", marginBottom: "20px", borderBottomLeftRadius: "12px 12px", borderBottomRightRadius: "12px 12px"}}>
                  <h1>{classData.subject + " " + classData.code}</h1>
@@ -93,7 +96,11 @@ const ClassModal = ({ activeClass }: any) => {
                 </div>
              </div>
         </div>
-     : <h1>Loading...</h1>);
+        :
+        <div style={{width: "100%", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
+            <LoadingIcon dataLoaded={classData !== null} setLoading={setLoading} /> 
+        </div>
+    )
 }
  
 export default ClassModal;
