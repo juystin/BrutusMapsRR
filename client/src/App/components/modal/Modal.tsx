@@ -8,6 +8,7 @@ import ClassModal from "./ClassModal";
 import BuildingsType from "../../../../../types/getBuildingsType"
 import AvailabilityType from "../../../../../types/getAvailabilityType"
 import ActiveClassType from "../../types/ActiveClassType";
+import { animated, useSpring } from "@react-spring/web";
 
 export interface ModalProps {
     type: ModalType,
@@ -23,6 +24,52 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
     const [activeClassroom, setActiveClassroom] = useState<string | null>(null)
     const [activeClass, setActiveClass] = useState<ActiveClassType | null>(null)
     const [isOpen, setIsOpen] = useState<boolean>(true)
+    const [initialRenderOccurred, setInitialRenderOccurred] = useState<boolean>(false)
+
+    const containerStyle = {
+        position: "absolute", 
+        zIndex: "2", 
+        right: 0,
+        height: "100%", 
+        display: "flex", 
+        alignItems: "center", 
+        filter: "drop-shadow(15px 0px 30px #13070C)", 
+        pointerEvents: "none",
+    } as const
+
+    const [animation, api] = useSpring(() => ({
+        from: {
+            width: "0vw"
+        }
+    }))
+
+    useEffect(() => {
+        if (isOpen) {
+            setTimeout(() => {
+                api.start({
+                    from: {
+                        width: "0vw"
+                    },
+                    to: {
+                        width: "40vw"
+                    },
+                    config: {
+                        tension: 100,
+                        friction: 30,
+                        mass: 1
+                    },
+                })
+            }, initialRenderOccurred ? 0 : 500)
+            setInitialRenderOccurred(true)
+        } else {
+            api.start({
+                to: {
+                    width: "0vw"
+                },
+                immediate: true
+            })
+        }
+    }, [isOpen])
 
     useEffect(() => {
         if (activeMarker !== null) {
@@ -31,15 +78,18 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
     }, [activeMarker])
 
     return ( isOpen ?
-        <div style={{position: "absolute", zIndex: "2", right: 0, width: "40%", height: "100%", display: "flex", alignItems: "center", filter: "drop-shadow(15px 0px 30px #13070C)", pointerEvents: "none"}}>
-            <div style={{width: "5%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+        <animated.div style={{
+            ...containerStyle,
+            ...animation
+        }}>
+            <div style={{minWidth: "2vw", maxWidth: "2vw", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
                 <div style={{height: "80px", width: "100%", background: "#BA0C2F", display: "flex", alignItems: "center", justifyContent: "center", borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px", cursor: "pointer", position: "relative", zIndex: 2, pointerEvents: "auto"}}
                     onClick={() => setIsOpen(!isOpen)}
                 >
                     <ArrowIcon isOpen={isOpen}/>
                 </div>
             </div>
-            <div style={{width: "95%", height: "100%", overflow: "scroll", background: "#EEE5E9", pointerEvents: "auto"}}>
+            <div style={{minWidth: "38vw", maxWidth: "38vw", height: "100%", overflow: "scroll", background: "#EEE5E9", pointerEvents: "auto"}}>
             {
                 type === ModalType.ALL 
                 ?
@@ -60,10 +110,10 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
                 <h1 style={{color: "black"}}>ALL</h1>
             }
             </div>
-        </div>
+        </animated.div>
         :
-        <div style={{position: "absolute", zIndex: "2", right: 0, width: "40%", height: "100%", display: "flex", alignItems: "center", justifyContent: "flex-end", filter: "drop-shadow(0px 0px 30px #13070C)", pointerEvents: "none"}}>
-            <div style={{width: "5%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+        <div style={{position: "absolute", zIndex: "2", right: 0, width: "25vw", height: "100%", display: "flex", alignItems: "center", justifyContent: "flex-end", filter: "drop-shadow(0px 0px 30px #13070C)", pointerEvents: "none"}}>
+            <div style={{minWidth: "2vw", maxWidth: "2vw", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
                 <div style={{height: "80px", width: "100%", background: "#BA0C2F", display: "flex", alignItems: "center", justifyContent: "center", borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px", cursor: "pointer", pointerEvents: "auto"}}
                     onClick={() => setIsOpen(!isOpen)}
                 >

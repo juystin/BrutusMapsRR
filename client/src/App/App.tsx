@@ -52,11 +52,11 @@ function App() {
 
 	return ( buildingData && availabilityData ?
 		<>
-			<Modal type={modalType} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType}/>
+			{ mapLoaded ? <Modal type={modalType} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType}/> : <></> }
 			<Map
 				initialViewState={{
-					longitude: Number(buildingData.find((building: any) => building.buildingNum === "279")!.lng),
-					latitude: Number(buildingData.find((building: any) => building.buildingNum === "279")!.lat),
+					longitude: Number(buildingData.find((building: any) => building.buildingNum === "339")!.lng),
+					latitude: Number(buildingData.find((building: any) => building.buildingNum === "339")!.lat),
 					zoom: 14
 				}}
 				style={{width: "100%", height: "100%", position: "relative", zIndex: "1"}}
@@ -71,8 +71,7 @@ function App() {
 					}
 				}}
 			>
-				{ //mapLoaded ?
-					true ?
+				{ mapLoaded ?
 					buildingDataByLat!.map((buildingData: any) => {
 						return (
 							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum)!.available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
