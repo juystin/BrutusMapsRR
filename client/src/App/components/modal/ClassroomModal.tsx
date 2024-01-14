@@ -33,7 +33,7 @@ const ClassroomModal = ({ activeClassroom, setModalType, setActiveClass }: Class
 
     return ( classroomData && !loading ?
         <div style={{height: "100%", width: "100%"}} >
-            <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", height: "80px", background: "#BA0C2F", marginBottom: "20px", borderBottomLeftRadius: "12px 12px", borderBottomRightRadius: "12px 12px"}}>
+            <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", height: "80px", background: "#BA0C2F", borderBottomLeftRadius: "12px 12px", borderBottomRightRadius: "12px 12px"}}>
                  <h1>{activeClassroom}</h1>
              </div>
              <div style={{width: "100%", height: "auto"}}>
@@ -41,7 +41,7 @@ const ClassroomModal = ({ activeClassroom, setModalType, setActiveClass }: Class
              </div>
         </div>
         :
-        <div style={{width: "100%", height: "calc(100vh)", display: "flex", alignItems: "center", justifyContent: "center"}}>
+        <div style={{width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
             <LoadingIcon dataLoaded={classroomData !== null} setLoading={setLoading} /> 
         </div>
     );

@@ -132,23 +132,32 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                     width: "100%",
                     height: "100%"
                 }}
+                initialSlide={new Date().getDay()}
                 mousewheel={{
                     forceToAxis: true
                 }}
                 direction="horizontal"
                 loop={true}
             >
+                {/* <SwiperSlide>
+                    <div style={{display: "flex", width: "100%", height: "100%", alignItems: "center", flexDirection: "column", paddingTop: "20px"}}>
+                        <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{"sunday"}</h1>
+                        <p style={{color: "#13070C", textTransform: "uppercase", fontSize: "100px", margin: "35% 0 0 0"}}>{"hooray!"}</p>
+                        <p style={{color: "#13070C", fontSize: "40px", margin: "0 0"}}>{"(no classes today.)"}</p>
+                    </div>
+                </SwiperSlide> */}
                 { classroomData.map((individualDayInfo: ClassroomScheduleType) => {
                     return (
                         <SwiperSlide>
-                            <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center"}}>
+                            <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", paddingTop: "20px"}}>
                                 <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
                             </div>
                             <div style={{
                                 display: "grid",
                                 gridTemplateRows: "repeat(" + (TOTAL_GRID_BOXES - END_REMOVAL) + ", " + TIME_BOX_SIZE * 6 + "px)",
                                 gridTemplateColumns: "1fr 4fr",
-                                paddingRight: "20px"
+                                paddingRight: "20px",
+                                paddingTop: "10px"
                             }}>
                                 { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
                                 { loadClasses(START_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass) }
@@ -157,6 +166,13 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                         </SwiperSlide>
                     )
                 }) }
+                {/* <SwiperSlide>
+                    <div style={{display: "flex", width: "100%", height: "100%", alignItems: "center", flexDirection: "column", paddingTop: "20px"}}>
+                        <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{"saturday"}</h1>
+                        <p style={{color: "#13070C", textTransform: "uppercase", fontSize: "100px", margin: "35% 0 0 0"}}>{"hooray!"}</p>
+                        <p style={{color: "#13070C", fontSize: "40px", margin: "0 0"}}>{"(no classes today.)"}</p>
+                    </div>
+                </SwiperSlide> */}
             </Swiper>
      );
 }

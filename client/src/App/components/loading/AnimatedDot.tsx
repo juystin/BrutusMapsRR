@@ -28,7 +28,7 @@ function calculateDelay(index: number): number {
     } else if (index === 3) {
         delay = 800
     } else {
-        delay = 300
+        delay = 400
     }
 
     return delay
