@@ -30,10 +30,10 @@ const LoadingIcon = ({ dataLoaded, setLoading }: LoadingIconProps) => {
     }))
 
     useEffect(() => {
-        if (dataLoaded && !loadAnimationPlaying) {
+        if (dataLoaded) {
             setTimeout(() => {
                 setLoading(false)
-            })
+            }, 1000)
             // api.start({
             //     to: {
             //         opacity: 0
