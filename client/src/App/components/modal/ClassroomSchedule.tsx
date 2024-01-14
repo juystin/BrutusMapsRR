@@ -4,6 +4,7 @@ import 'swiper/css';
 import { ModalType } from '../../types/ModalType';
 import ActiveClassType from '../../types/ActiveClassType';
 import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
+import { useEffect, useState } from 'react';
 
 function getMinutes(time: string) {
     return (Number(time.substring(0, 2)) * 60) + Number(time.substring(3, 5))
@@ -123,14 +124,20 @@ export interface ClassroomScheduleProps {
 
 const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: ClassroomScheduleProps) => {
     
+    const [swiper, setSwiper] = useState<number>(new Date().getDay());
+
+    useEffect(() => {
+        console.log(swiper)
+    }, [swiper])
+
     return ( 
             <Swiper
                 modules={[Mousewheel]}
                 spaceBetween={50}
-                onSlideChange={() => console.log('slide change')}
                 style={{
                     width: "100%",
-                    height: "100%"
+                    height: "calc(100vh - 80px)",
+                    overflow: swiper === 6 || swiper === 0 ? "clip" : "scroll"
                 }}
                 initialSlide={new Date().getDay()}
                 mousewheel={{
@@ -138,14 +145,15 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                 }}
                 direction="horizontal"
                 loop={true}
+                onRealIndexChange={(swiperCore) => setSwiper(swiperCore.realIndex)}
             >
-                {/* <SwiperSlide>
+                <SwiperSlide>
                     <div style={{display: "flex", width: "100%", height: "100%", alignItems: "center", flexDirection: "column", paddingTop: "20px"}}>
                         <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{"sunday"}</h1>
                         <p style={{color: "#13070C", textTransform: "uppercase", fontSize: "100px", margin: "35% 0 0 0"}}>{"hooray!"}</p>
                         <p style={{color: "#13070C", fontSize: "40px", margin: "0 0"}}>{"(no classes today.)"}</p>
                     </div>
-                </SwiperSlide> */}
+                </SwiperSlide>
                 { classroomData.map((individualDayInfo: ClassroomScheduleType) => {
                     return (
                         <SwiperSlide>
@@ -166,13 +174,13 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                         </SwiperSlide>
                     )
                 }) }
-                {/* <SwiperSlide>
-                    <div style={{display: "flex", width: "100%", height: "100%", alignItems: "center", flexDirection: "column", paddingTop: "20px"}}>
+                <SwiperSlide>
+                    <div style={{display: "flex", width: "100%", height: "auto", alignItems: "center", flexDirection: "column", paddingTop: "20px"}}>
                         <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{"saturday"}</h1>
                         <p style={{color: "#13070C", textTransform: "uppercase", fontSize: "100px", margin: "35% 0 0 0"}}>{"hooray!"}</p>
                         <p style={{color: "#13070C", fontSize: "40px", margin: "0 0"}}>{"(no classes today.)"}</p>
                     </div>
-                </SwiperSlide> */}
+                </SwiperSlide>
             </Swiper>
      );
 }

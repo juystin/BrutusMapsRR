@@ -8,6 +8,10 @@ import { ModalType } from './types/ModalType';
 import getBuildingsType from "../../../types/getBuildingsType"
 import getAvailabilityType from "../../../types/getAvailabilityType"
 
+function getCurrentDay() {
+	return ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"][new Date().getDay()]
+}
+
 function App() {
 
 	const [mapLoaded, setMapLoaded] = useState<boolean>(false);
@@ -41,7 +45,7 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get('http://localhost:8000/api/getAvailability?day=wednesday&time=1200&order=available')
+		axios.get('http://localhost:8000/api/getAvailability?day=' + getCurrentDay() + '&time=1200&order=available')
 			.then(function (response) {
 				setAvailabilityData(response.data)
 			})

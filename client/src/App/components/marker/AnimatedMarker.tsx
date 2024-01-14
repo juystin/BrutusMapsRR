@@ -16,6 +16,21 @@ export interface AnimatedMarkerProps {
     setModalType: React.Dispatch<React.SetStateAction<ModalType>>
 }
 
+const zoomToOffset: { [key: string]: number } = {
+    "13": 0.03,
+    "14": 0.01,
+    "15": 0.005,
+    "16": 0.0025
+}
+
+function getNearestNumber(number: number) {
+    return Object.keys(zoomToOffset).sort((a, b) => Math.abs(number - Number(a)) - Math.abs(number - Number(b)))[0];
+}
+
+function getOffsetFromZoom(zoom: number) {
+    return zoomToOffset[zoom]
+}
+
 const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker, setHoveringOverMarker, setModalType}: AnimatedMarkerProps) => {
 
     const [yIndex, setYIndex] = useState<number>(0);
@@ -44,7 +59,9 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
         if (activeMarker === buildingData.buildingNum) {
             // Marker is active
             setMarkerClickCounter((count) => count + 1)
-            map!.jumpTo({center: [Number(buildingData.lng) + 0.0055, Number(buildingData.lat)]})
+            map!.jumpTo({center: [Number(buildingData.lng) + getOffsetFromZoom(Number(getNearestNumber(map!.getZoom()))), Number(buildingData.lat)]})
+            console.log(Number(getNearestNumber(map!.getZoom())))
+            map!.setZoom(Number(getNearestNumber(map!.getZoom())))
         }
         api.start({
             to: {

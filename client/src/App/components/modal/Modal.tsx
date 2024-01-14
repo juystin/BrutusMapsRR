@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ModalType } from "../../types/ModalType";
 import ClassroomModal from "./ClassroomModal";
 import DefaultModal from "./DefaultModal";
@@ -25,6 +25,15 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
     const [activeClass, setActiveClass] = useState<ActiveClassType | null>(null)
     const [isOpen, setIsOpen] = useState<boolean>(true)
     const [initialRenderOccurred, setInitialRenderOccurred] = useState<boolean>(false)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (containerRef.current) {
+            containerRef.current.scroll({
+                top: 0
+            })
+        }
+    }, [type])
 
     const containerStyle = {
         position: "absolute", 
@@ -89,7 +98,7 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
                     <ArrowIcon isOpen={isOpen}/>
                 </div>
             </div>
-            <div style={{minWidth: "38vw", maxWidth: "38vw", height: "100%", overflow: "scroll", background: "#EEE5E9", pointerEvents: "auto"}}>
+            <div ref={containerRef} style={{minWidth: "38vw", maxWidth: "38vw", height: "100%", overflow: "scroll", background: "#EEE5E9", pointerEvents: "auto"}}>
             {
                 type === ModalType.ALL 
                 ?
