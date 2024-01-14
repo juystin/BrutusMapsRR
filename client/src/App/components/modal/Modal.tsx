@@ -64,7 +64,7 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
         } else {
             api.start({
                 to: {
-                    width: "0vw"
+                    width: "2vw"
                 },
                 immediate: true
             })
@@ -77,7 +77,7 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
         }
     }, [activeMarker])
 
-    return ( isOpen ?
+    return (
         <animated.div style={{
             ...containerStyle,
             ...animation
@@ -111,16 +111,6 @@ const Modal = ({ type, activeMarker, setActiveMarker, buildingData, availability
             }
             </div>
         </animated.div>
-        :
-        <div style={{position: "absolute", zIndex: "2", right: 0, width: "25vw", height: "100%", display: "flex", alignItems: "center", justifyContent: "flex-end", filter: "drop-shadow(0px 0px 30px #13070C)", pointerEvents: "none"}}>
-            <div style={{minWidth: "2vw", maxWidth: "2vw", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
-                <div style={{height: "80px", width: "100%", background: "#BA0C2F", display: "flex", alignItems: "center", justifyContent: "center", borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px", cursor: "pointer", pointerEvents: "auto"}}
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    <ArrowIcon isOpen={isOpen}/>
-                </div>
-            </div>
-        </div>
     )
 }
  
