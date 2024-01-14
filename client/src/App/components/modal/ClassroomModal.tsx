@@ -42,7 +42,7 @@ const ClassroomModal = ({ activeClassroom, setModalType, setActiveClass }: Class
         </div>
         :
         <div style={{width: "100%", height: "calc(100vh)", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <LoadingIcon data={classroomData} setLoading={setLoading} /> 
+            <LoadingIcon dataLoaded={classroomData !== null} setLoading={setLoading} /> 
         </div>
     );
 }

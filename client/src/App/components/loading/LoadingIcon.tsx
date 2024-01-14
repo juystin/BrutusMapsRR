@@ -3,32 +3,65 @@ import SectionInfoType from "../../../../../types/getSectionInfoType"
 import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
 import BuildingsType from "../../../../../types/getBuildingsType";
 import AvailabilityType from "../../../../../types/getAvailabilityType";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { animated, useSpring } from "@react-spring/web";
 
 interface LoadingIconProps {
-    data: AvailabilityType | BuildingsType | ClassroomScheduleType[] | SectionInfoType | null,
+    dataLoaded: boolean,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-const LoadingIcon = ({ data, setLoading }: LoadingIconProps) => {
+const LoadingIcon = ({ dataLoaded, setLoading }: LoadingIconProps) => {
+    const containerStyle = {
+        height: "125px",
+        width: "125px",
+        display: "grid",
+        gap: "2px",
+        gridTemplateRows: "1fr 1fr 1fr",
+        gridTemplateColumns: "1fr 1fr 1fr"
+    }
+
+    const [loadAnimationPlaying, setLoadAnimationPlaying] = useState<boolean>(true);
+
+    const [animation, api] = useSpring(() => ({
+        from: {
+            opacity: 1
+        }
+    }))
 
     useEffect(() => {
-        if (data) {
-            setLoading(false)
+        if (dataLoaded && !loadAnimationPlaying) {
+            setTimeout(() => {
+                setLoading(false)
+            })
+            // api.start({
+            //     to: {
+            //         opacity: 0
+            //     },
+            //     onRest: () => {
+            //         setLoading(false)
+            //     },
+            //     config: {
+            //         tension: 80,
+            //         friction: 20,
+            //         mass: 1
+            //     },
+            //     delay: 2000
+            // })
         }
-    }, [data])
+    }, [dataLoaded, loadAnimationPlaying])
 
+    
     return ( 
-        <div style={{
-            height: "200px",
-            width: "200px",
-            display: "grid",
-            backgroundColor: "purple",
-            gridTemplateRows: "1fr 1fr 1fr",
-            gridTemplateColumns: "1fr 1fr 1fr"
+        <animated.div style={{
+            ...containerStyle,
+            ...animation
         }}>
-            <AnimatedDot />
-        </div>
+            { [0, 1, 2, 3, 4, 5, 6, 7, 8].map((index: number) => {
+                return (<AnimatedDot index={index} dataLoaded={dataLoaded} loadAnimationPlaying={loadAnimationPlaying} setLoadAnimationPlaying={setLoadAnimationPlaying} />)
+            })
+            }
+        </animated.div>
      );
 }
  

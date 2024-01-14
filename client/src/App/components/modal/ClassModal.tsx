@@ -98,7 +98,7 @@ const ClassModal = ({ activeClass }: any) => {
         </div>
         :
         <div style={{width: "100%", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <LoadingIcon data={classData} setLoading={setLoading} /> 
+            <LoadingIcon dataLoaded={classData !== null} setLoading={setLoading} /> 
         </div>
     )
 }
