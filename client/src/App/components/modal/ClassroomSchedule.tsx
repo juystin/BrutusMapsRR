@@ -126,9 +126,17 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
     
     const [swiper, setSwiper] = useState<number>(new Date().getDay());
 
+    const [disabledScrollSlides, setDisabledScrollSlides] = useState<number[]>([0, 6])
+
     useEffect(() => {
-        console.log(swiper)
-    }, [swiper])
+        if (classroomData) {
+            for (let day of classroomData) {
+                if (day.schedule.length === 0) {
+                    setDisabledScrollSlides(disabledScrollSlides.concat(["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(day.day)))
+                }
+            }
+        }
+    }, [classroomData])
 
     return ( 
             <Swiper
@@ -137,7 +145,7 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                 style={{
                     width: "100%",
                     height: "calc(100vh - 80px)",
-                    overflow: swiper === 6 || swiper === 0 ? "clip" : "scroll"
+                    overflow: swiper in disabledScrollSlides ? "clip" : "scroll"
                 }}
                 initialSlide={new Date().getDay()}
                 mousewheel={{
@@ -155,7 +163,7 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                     </div>
                 </SwiperSlide>
                 { classroomData.map((individualDayInfo: ClassroomScheduleType) => {
-                    return (
+                    return ( individualDayInfo.schedule.length !== 0 ?
                         <SwiperSlide>
                             <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", paddingTop: "20px"}}>
                                 <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
@@ -170,6 +178,14 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                                 { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
                                 { loadClasses(START_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass) }
                                 { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, SCHEDULE_OFFSET) }
+                            </div>
+                        </SwiperSlide>
+                    :
+                        <SwiperSlide>
+                            <div style={{display: "flex", width: "100%", height: "100%", alignItems: "center", flexDirection: "column", paddingTop: "20px"}}>
+                                <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
+                                <p style={{color: "#13070C", textTransform: "uppercase", fontSize: "100px", margin: "35% 0 0 0"}}>{"hooray!"}</p>
+                                <p style={{color: "#13070C", fontSize: "40px", margin: "0 0"}}>{"(no classes today.)"}</p>
                             </div>
                         </SwiperSlide>
                     )

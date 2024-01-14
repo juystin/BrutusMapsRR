@@ -38,7 +38,7 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
-			axios.get('http://localhost:8000/api/getBuildings?order=lat')
+		axios.get('http://localhost:8000/api/getBuildings?order=lat')
 			.then(function (response) {
 				setBuildingDataByLat(response.data)
 			})
@@ -77,7 +77,7 @@ function App() {
 			>
 				{ mapLoaded ?
 					buildingDataByLat!.map((buildingData: any) => {
-						return (
+						return ( 
 							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum)!.available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
 						)
 					})

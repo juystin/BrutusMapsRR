@@ -4,6 +4,7 @@ import { Marker, useMap } from "react-map-gl";
 import MarkerIcon from "./MarkerIcon";
 import { ModalType } from "../../types/ModalType";
 import BuildingType from "../../../../../types/getBuildingsType"
+import useWindowDimensions from "../../hooks/useWindowDimensions";
 
 export interface AnimatedMarkerProps {
     buildingData: BuildingType
@@ -16,19 +17,21 @@ export interface AnimatedMarkerProps {
     setModalType: React.Dispatch<React.SetStateAction<ModalType>>
 }
 
-const zoomToOffset: { [key: string]: number } = {
-    "13": 0.03,
-    "14": 0.01,
-    "15": 0.005,
-    "16": 0.0025
+// Linear regression magic
+const zoomToOffset: { [key: string]: (width: number) => number } = {
+    //"13": 0.03,
+    //"14": 0.01,
+    "15": (width: number) => -0.0014 + 0.000004822 * width
+    //"16": 0.0025
 }
 
 function getNearestNumber(number: number) {
     return Object.keys(zoomToOffset).sort((a, b) => Math.abs(number - Number(a)) - Math.abs(number - Number(b)))[0];
 }
 
-function getOffsetFromZoom(zoom: number) {
-    return zoomToOffset[zoom]
+function getOffsetFromZoom(zoom: number, width: number) {
+    console.log(zoomToOffset[getNearestNumber(zoom)](width))
+    return zoomToOffset[getNearestNumber(zoom)](width)
 }
 
 const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker, setHoveringOverMarker, setModalType}: AnimatedMarkerProps) => {
@@ -38,6 +41,8 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
     const [initiallyRendered, setInitiallyRendered] = useState<boolean>(false);
 
     const map = useMap().current
+
+    const { height, width } = useWindowDimensions()
 
     const baseStyle = {
         pointerEvents: ("none" as React.CSSProperties["pointerEvents"]),
@@ -56,11 +61,14 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
     }))
 
     useEffect(() => {
+        console.log(height, width)
+    }, [height, width])
+
+    useEffect(() => {
         if (activeMarker === buildingData.buildingNum) {
             // Marker is active
             setMarkerClickCounter((count) => count + 1)
-            map!.jumpTo({center: [Number(buildingData.lng) + getOffsetFromZoom(Number(getNearestNumber(map!.getZoom()))), Number(buildingData.lat)]})
-            console.log(Number(getNearestNumber(map!.getZoom())))
+            map!.jumpTo({center: [Number(buildingData.lng) + getOffsetFromZoom(Number(getNearestNumber(map!.getZoom())), width!), Number(buildingData.lat)]})
             map!.setZoom(Number(getNearestNumber(map!.getZoom())))
         }
         api.start({
