@@ -30,7 +30,6 @@ function getNearestNumber(number: number) {
 }
 
 function getOffsetFromZoom(zoom: number, width: number) {
-    console.log(zoomToOffset[getNearestNumber(zoom)](width))
     return zoomToOffset[getNearestNumber(zoom)](width)
 }
 
@@ -59,10 +58,6 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
             mass: 1
         },
     }))
-
-    useEffect(() => {
-        console.log(height, width)
-    }, [height, width])
 
     useEffect(() => {
         if (activeMarker === buildingData.buildingNum) {

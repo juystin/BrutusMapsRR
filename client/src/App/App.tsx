@@ -31,21 +31,21 @@ function App() {
 
 	useEffect(() => {
 		// Default marker order is by first-in placement. Knowing this, place markers bottom to top to prevent weird overlaps (i.e., place by latitude)
-		axios.get('http://localhost:8000/api/getBuildings')
+		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getBuildings')
 			.then(function (response) {
 				setBuildingData(response.data)
 			})
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get('http://localhost:8000/api/getBuildings?order=lat')
+		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getBuildings?order=lat')
 			.then(function (response) {
 				setBuildingDataByLat(response.data)
 			})
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get('http://localhost:8000/api/getAvailability?day=' + getCurrentDay() + '&time=1200&order=available')
+		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=1200&order=available')
 			.then(function (response) {
 				setAvailabilityData(response.data)
 			})

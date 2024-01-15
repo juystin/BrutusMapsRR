@@ -21,7 +21,7 @@ const ClassroomModal = ({ activeClassroom, setModalType, setActiveClass }: Class
         if (activeClassroom) {
             setLoading(true)
             setClassroomData(null);
-            axios.get('http://localhost:8000/api/getClassroomSchedule?facility=' + activeClassroom)
+            axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getClassroomSchedule?facility=' + activeClassroom)
 			.then(function (response) {
 				setClassroomData(response.data)
 			})
