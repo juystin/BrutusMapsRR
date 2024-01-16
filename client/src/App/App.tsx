@@ -17,7 +17,7 @@ function getCurrentDay() {
 }
 
 function getCurrentTime(): string {
-	return (CURRENT_TIME.getHours() < 10 ? "0" + CURRENT_TIME.getHours.toString() : CURRENT_TIME.getHours().toString()) + (CURRENT_TIME.getMinutes() < 10 ? "0" + CURRENT_TIME.getMinutes.toString() : CURRENT_TIME.getMinutes().toString())
+	return (CURRENT_TIME.getHours() < 10 ? "0" + CURRENT_TIME.getHours.toString() : CURRENT_TIME.getHours().toString()) + (CURRENT_TIME.getMinutes() < 10 ? "0" + CURRENT_TIME.getMinutes().toString() : CURRENT_TIME.getMinutes().toString())
 }
 
 function App() {
@@ -40,6 +40,7 @@ function App() {
 	const [modalType, setModalType] = useState<ModalType>(ModalType.ALL)
 
 	useEffect(() => {
+		console.log('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
 		// Default marker order is by first-in placement. Knowing this, place markers bottom to top to prevent weird overlaps (i.e., place by latitude)
 		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getBuildings')
 			.then(function (response) {
