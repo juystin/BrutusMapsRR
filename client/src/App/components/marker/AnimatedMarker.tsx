@@ -14,26 +14,38 @@ export interface AnimatedMarkerProps {
     activeMarker: string | null,
     setActiveMarker: React.Dispatch<React.SetStateAction<string | null>>,
     setHoveringOverMarker: React.Dispatch<React.SetStateAction<boolean>>,
-    setModalType: React.Dispatch<React.SetStateAction<ModalType>>
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>,
+    isDesktop: boolean
 }
 
 // Linear regression magic
-const zoomToOffset: { [key: string]: (width: number) => number } = {
-    //"13": 0.03,
-    //"14": 0.01,
-    "15": (width: number) => -0.0014 + 0.000004822 * width
-    //"16": 0.0025
+const zoomToHorizontalOffset: { [key: string]: (width: number) => number } = {
+    "13": (width: number) => -0.002533 + 0.00001814 * width,
+    "14": (width: number) => -0.0002481 + 0.000008879 * width,
+    "15": (width: number) => -0.0014 + 0.000004822 * width,
+    "16": (width: number) => -0.0007177 + 0.000002436 * width,
+}
+
+const zoomToVerticalOffset: { [key: string]: (height: number) => number } = {
+    "13": (height: number) => 0.0006667 - 0.00001333 * height,
+    "14": (height: number) => 0.00116 - 0.000008101 * height,
+    "15": (height: number) => 0.004535 - 0.00001061 * height,
+    "16": (height: number) => 0.0001667 - 0.000002 * height
 }
 
 function getNearestNumber(number: number) {
-    return Object.keys(zoomToOffset).sort((a, b) => Math.abs(number - Number(a)) - Math.abs(number - Number(b)))[0];
+    return [13, 14, 15, 16].sort((a, b) => Math.abs(number - a) - Math.abs(number - b))[0];
 }
 
-function getOffsetFromZoom(zoom: number, width: number) {
-    return zoomToOffset[getNearestNumber(zoom)](width)
+function getHorizontalOffsetFromZoom(zoom: number, width: number) {
+    return zoomToHorizontalOffset[getNearestNumber(zoom)](width)
 }
 
-const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker, setHoveringOverMarker, setModalType}: AnimatedMarkerProps) => {
+function getVerticalOffsetFromZoom(zoom: number, height: number) {
+    return zoomToVerticalOffset[getNearestNumber(zoom)](height)
+}
+
+const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerClickCounter, activeMarker, setActiveMarker, setHoveringOverMarker, setModalType, isDesktop}: AnimatedMarkerProps) => {
 
     const [yIndex, setYIndex] = useState<number>(0);
     
@@ -63,7 +75,11 @@ const AnimatedMarker = ({buildingData, available, markerClickCounter, setMarkerC
         if (activeMarker === buildingData.buildingNum) {
             // Marker is active
             setMarkerClickCounter((count) => count + 1)
-            map!.jumpTo({center: [Number(buildingData.lng) + getOffsetFromZoom(Number(getNearestNumber(map!.getZoom())), width!), Number(buildingData.lat)]})
+            if (isDesktop) {
+                map!.jumpTo({center: [Number(buildingData.lng) + getHorizontalOffsetFromZoom(Number(getNearestNumber(map!.getZoom())), width!), Number(buildingData.lat)]})
+            } else {
+                map!.jumpTo({center: [Number(buildingData.lng), Number(buildingData.lat) + getVerticalOffsetFromZoom(Number(getNearestNumber(map!.getZoom())), height!)]})
+            }
             map!.setZoom(Number(getNearestNumber(map!.getZoom())))
         }
         api.start({

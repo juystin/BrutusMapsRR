@@ -5,6 +5,9 @@ import { ModalType } from '../../types/ModalType';
 import ActiveClassType from '../../types/ActiveClassType';
 import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
 import { useEffect, useState } from 'react';
+import styled from "styled-components";
+import { device } from '../../css/devices';
+
 
 function getMinutes(time: string) {
     return (Number(time.substring(0, 2)) * 60) + Number(time.substring(3, 5))
@@ -44,26 +47,186 @@ const TOTAL_GRID_BOXES = getGridBoxFromTime(END_TIME, START_TIME, BOX_INTERVAL) 
 // Clips boxes some off the end
 const END_REMOVAL = Math.floor(BOX_INTERVAL / 2)
 
+export interface ClassroomScheduleProps {
+    classroomData: ClassroomScheduleType[],
+    setModalType: React.Dispatch<React.SetStateAction<ModalType>>,
+    setActiveClass: React.Dispatch<React.SetStateAction<ActiveClassType | null>>,
+    isDesktop: boolean
+}
+
+const EmptyClassContentContainer = styled.div`
+    height: 100%;
+    width: 100%;
+`
+
+const EmptyHeaderContainer = styled.div`
+    width: 100%;    
+
+    display: flex; 
+    align-items: center;
+    flex-direction: column; 
+    
+    padding-top: 20px;
+`
+
+const HeaderContainer = styled.div`
+    width: 100%;    
+
+    display: flex; 
+    align-items: center;
+    flex-direction: column; 
+    
+    padding-top: 20px;
+`
+
+const HeaderText = styled.h1`
+    color: #13070C;
+    
+    font-size: 18px;
+
+    text-transform: capitalize;
+`
+
+const EmptyDayContainer = styled.div`
+    position: absolute;
+    z-index: 2;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    margin-top: -20px;
+`
+
+const EmptyDayText = styled.p`
+    color: ${props => props.theme.colors.black};
+    
+    font-size: 70px;
+
+    text-transform: uppercase;
+    
+    margin: 0 auto;
+`
+
+const EmptyDaySubtext = styled.p`
+    color: ${props => props.theme.colors.black};
+    
+    font-size: 40px;
+    
+    margin: 0 auto;
+`
+
+const ContentContainer = styled.div`
+    width: 100%;
+    height: 100%;
+
+    box-sizing: border-box;
+
+    display: grid;
+    grid-template-rows: 1fr 5fr;
+
+    overflow: scroll;
+
+    padding: 0px 6px;
+
+    @media ${device.landscapeTablet} { 
+        padding: 0px 0px;
+        grid-template-rows: 1fr 8fr;
+    }
+`
+
+const ScheduleContainer = styled.div<{ totalgridboxes: number, endremoval: number, timeboxsize: number, isdesktop: boolean }>`
+    display: grid;
+    grid-template-rows: repeat( ${props => (props.totalgridboxes - props.endremoval)}, ${props => (props.timeboxsize * (props.isdesktop ? 6 : 3.5))}px);
+    grid-template-columns: 1fr 4fr;
+
+    padding: 10px 20px 0px 0px;
+`
+
+const TimeBox = styled.div<{ index: number, size: number }>`
+    grid-row: ${props => props.index + 1} / ${props => props.index + 1 + props.size};
+    grid-column: 1 / 2;
+    
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+
+const Time = styled.h1`
+    color: #13070C;
+    font-size: 16px;
+
+    @media ${device.landscapeTablet} {
+        font-size: 24px;
+    }
+`
+
+const TimeBreak = styled.div<{ index: number, offset: number }>`
+    height: 1px;
+
+    grid-row: ${props => props.index + 1 + props.offset} / ${props => props.index + 1 + props.offset};
+    grid-column: 2 / 3;
+    
+    background: #13070C;
+`
+
+const ClassBlockContainer = styled.div<{ startbox: number, endbox: number, offset: number }>`
+    grid-row: ${props => props.startbox + 1 + props.offset} / ${props => props.endbox + 1 + props.offset};
+    grid-column: 2 / 3;
+
+    height: 100%;
+
+    background: #BA0C2F;
+    
+    border-radius: 12px;
+
+    margin: 0px 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    cursor: pointer;
+
+    position: relative;
+    z-index: 2;
+`
+
+const ClassIdentifier = styled.h1`
+    cursor: pointer;
+    font-size: 22px;
+
+    @media ${device.landscapeTablet} {
+        font-size: 36px;
+    }
+`
+
+const ClassTime = styled.h2`
+    cursor: pointer;
+    font-size: 13px;
+
+    @media ${device.landscapeTablet} {
+        font-size: 20px;
+    }
+`
+
 function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number, interval: number, size: number) {
     let timeBoxes: any = []
     for (let i = getGridBoxFromTime(startTime, startTime, interval); i < getGridBoxFromTime(endTime, startTime, interval); i += (timeMarkings / interval)) {
         timeBoxes.push(
-            <div style={{
-                gridRow: (i + 1).toString() + " / " + (i + 1 + size).toString(),
-                gridColumn: "1 / 2",
-                height: "100%",
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-            }}>
-                <h1 style={{
-                    color: "#13070C",
-                    fontSize: "125%"
-                }}>
+            <TimeBox index={i} size={size}>
+                <Time>
                     {getTimeFromGridBox(i + (getMinutes(startTime) / interval), interval)}
-                </h1>    
-            </div>
+                </Time>    
+            </TimeBox>
         )
     }
     return timeBoxes
@@ -73,12 +236,7 @@ function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number
     let timeBreaks: any = []
     for (let i = getGridBoxFromTime(startTime, startTime, interval); i < getGridBoxFromTime(endTime, startTime, interval); i += (timeMarkings / interval)) {
         timeBreaks.push(
-            <div style={{
-                gridRow: (i + 1 + offset).toString() + " / " + (i + 2 + offset).toString(),
-                gridColumn: "2 / 3",
-                height: "1px",
-                background: "#13070C"
-            }} />
+            <TimeBreak index={i} offset={offset} />
         )
     }
     return timeBreaks
@@ -87,21 +245,7 @@ function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number
 function loadClasses(startTime: string, interval: number, offset: number, individualDayInfo: any, setModalType: React.Dispatch<React.SetStateAction<ModalType>>, setActiveClass: React.Dispatch<React.SetStateAction<any>>) {
     return individualDayInfo.schedule.map((classInfo: any) => {
         return (
-            <div style={{
-                    gridRow: (getGridBoxFromTime(classInfo.start, startTime, interval) + 1 + offset).toString() + " / " + (getGridBoxFromTime(classInfo.end, startTime, interval) + 1 + offset).toString(),
-                    gridColumn: "2 / 3",
-                    background: "#BA0C2F",
-                    height: "100%",
-                    position: "relative",
-                    zIndex: 2,
-                    borderRadius: "12px",
-                    margin: "0px 10px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    cursor: "pointer"
-                }}
+            <ClassBlockContainer startbox={getGridBoxFromTime(classInfo.start, startTime, interval)} endbox={getGridBoxFromTime(classInfo.end, startTime, interval)} offset={offset}
                 onClick={() => {
                     setModalType(ModalType.CLASS)
                     setActiveClass({
@@ -109,33 +253,14 @@ function loadClasses(startTime: string, interval: number, offset: number, indivi
                         sectionNo: classInfo.sectionNo
                     })
                 }}>
-                <h1 style={{cursor: "pointer"}}>{classInfo.subject + " " + classInfo.code}</h1>
-                <h2 style={{cursor: "pointer"}}>{classInfo.start + " - " + classInfo.end}</h2>
-            </div>
+                <ClassIdentifier>{classInfo.subject + " " + classInfo.code}</ClassIdentifier>
+                <ClassTime>{classInfo.start + " - " + classInfo.end}</ClassTime>
+            </ClassBlockContainer>
         )
     })
 }
 
-export interface ClassroomScheduleProps {
-    classroomData: ClassroomScheduleType[],
-    setModalType: React.Dispatch<React.SetStateAction<ModalType>>,
-    setActiveClass: React.Dispatch<React.SetStateAction<ActiveClassType | null>>
-}
-
-const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: ClassroomScheduleProps) => {
-    const [disabledScrollSlides, setDisabledScrollSlides] = useState<number[]>([0, 6])
-
-    const [currentIndex, setCurrentIndex] = useState<number>(new Date().getDay())
-
-    useEffect(() => {
-        if (classroomData) {
-            for (let day of classroomData) {
-                if (day.schedule.length === 0) {
-                    setDisabledScrollSlides(disabledScrollSlides.concat(["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].indexOf(day.day)))
-                }
-            }
-        }
-    }, [classroomData])
+const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass, isDesktop }: ClassroomScheduleProps) => {
 
     return (
             <Swiper
@@ -143,8 +268,7 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                 spaceBetween={50}
                 style={{
                     width: "100%",
-                    height: "calc(100vh - 80px)",
-                    overflow: disabledScrollSlides.includes(currentIndex) ? "clip" : "scroll"
+                    height: isDesktop ? "calc(100vh - 4vh - 80px)" : "calc(52vh - 5vh - 3.4vh - 80px)",
                 }}
                 initialSlide={new Date().getDay()}
                 mousewheel={{
@@ -152,55 +276,56 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass }: Clas
                 }}
                 direction="horizontal"
                 loop={true}
-                onRealIndexChange={(e) => setCurrentIndex(e.realIndex)}
             >
-                <SwiperSlide style={{height: ""}}>
-                    <div style={{display: "flex", width: "100%", height: "100%", alignItems: "center", flexDirection: "column", position: "absolute", zIndex: 1, paddingTop: "20px"}}>
-                        <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{"sunday"}</h1>
-                    </div>
-                    <div style={{display: "flex", width: "100%", height: "100vh", marginTop: "-80px", alignItems: "center", justifyContent: "center", flexDirection: "column", position: "relative", zIndex: 2}}>
-                        <p style={{color: "#13070C", textTransform: "uppercase", fontSize: "100px", margin: "0 auto"}}>{"hooray!"}</p>
-                        <p style={{color: "#13070C", fontSize: "40px", margin: "0 auto"}}>{"(no classes today.)"}</p>
-                    </div>
+                <SwiperSlide>
+                    <EmptyClassContentContainer>
+                        <EmptyHeaderContainer>
+                            <HeaderText>{"sunday"}</HeaderText>
+                        </EmptyHeaderContainer>
+                        <EmptyDayContainer>
+                            <EmptyDayText>{"hooray!"}</EmptyDayText>
+                            <EmptyDaySubtext>{"(no classes today.)"}</EmptyDaySubtext>
+                        </EmptyDayContainer>
+                    </EmptyClassContentContainer>
                 </SwiperSlide>
                 { classroomData.map((individualDayInfo: ClassroomScheduleType) => {
                     return ( individualDayInfo.schedule.length !== 0 ?
                         <SwiperSlide>
-                            <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", paddingTop: "20px"}}>
-                                <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
-                            </div>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateRows: "repeat(" + (TOTAL_GRID_BOXES - END_REMOVAL) + ", " + TIME_BOX_SIZE * 6 + "px)",
-                                gridTemplateColumns: "1fr 4fr",
-                                paddingRight: "20px",
-                                paddingTop: "10px"
-                            }}>
-                                { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
-                                { loadClasses(START_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass) }
-                                { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, SCHEDULE_OFFSET) }
-                            </div>
+                            <ContentContainer>
+                                <HeaderContainer>
+                                    <HeaderText>{individualDayInfo.day}</HeaderText>
+                                </HeaderContainer>
+                                <ScheduleContainer totalgridboxes={TOTAL_GRID_BOXES} endremoval={END_REMOVAL} timeboxsize={TIME_BOX_SIZE} isdesktop={isDesktop}>
+                                    { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
+                                    { loadClasses(START_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass) }
+                                    { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, SCHEDULE_OFFSET) }
+                                </ScheduleContainer>
+                            </ContentContainer>
                         </SwiperSlide>
                     :
                         <SwiperSlide>
-                            <div style={{display: "flex", width: "100%", height: "100%", alignItems: "center", flexDirection: "column", position: "absolute", zIndex: 1, paddingTop: "20px"}}>
-                                <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{individualDayInfo.day}</h1>
-                            </div>
-                            <div style={{display: "flex", width: "100%", height: "100vh", marginTop: "-80px", alignItems: "center", justifyContent: "center", flexDirection: "column", position: "relative", zIndex: 2}}>
-                                <p style={{color: "#13070C", textTransform: "uppercase", fontSize: "100px", margin: "0 auto"}}>{"hooray!"}</p>
-                                <p style={{color: "#13070C", fontSize: "40px", margin: "0 auto"}}>{"(no classes today.)"}</p>
-                            </div>
+                            <EmptyClassContentContainer>
+                                <EmptyHeaderContainer>
+                                    <HeaderText>{individualDayInfo.day}</HeaderText>
+                                </EmptyHeaderContainer>
+                                <EmptyDayContainer>
+                                    <EmptyDayText>{"hooray!"}</EmptyDayText>
+                                    <EmptyDaySubtext>{"(no classes today.)"}</EmptyDaySubtext>
+                                </EmptyDayContainer>
+                            </EmptyClassContentContainer>
                         </SwiperSlide>
                     )
                 }) }
                 <SwiperSlide>
-                    <div style={{display: "flex", width: "100%", height: "100%", alignItems: "center", flexDirection: "column", position: "absolute", zIndex: 1, paddingTop: "20px"}}>
-                        <h1 style={{color: "#13070C", textTransform: "capitalize", fontSize: "18px"}}>{"saturday"}</h1>
-                    </div>
-                    <div style={{display: "flex", width: "100%", height: "100vh", marginTop: "-80px", alignItems: "center", justifyContent: "center", flexDirection: "column", position: "relative", zIndex: 2}}>
-                        <p style={{color: "#13070C", textTransform: "uppercase", fontSize: "100px", margin: "0 auto"}}>{"hooray!"}</p>
-                        <p style={{color: "#13070C", fontSize: "40px", margin: "0 auto"}}>{"(no classes today.)"}</p>
-                    </div>
+                    <EmptyClassContentContainer>
+                        <EmptyHeaderContainer>
+                            <HeaderText>{"saturday"}</HeaderText>
+                        </EmptyHeaderContainer>
+                        <EmptyDayContainer>
+                            <EmptyDayText>{"hooray!"}</EmptyDayText>
+                            <EmptyDaySubtext>{"(no classes today.)"}</EmptyDaySubtext>
+                        </EmptyDayContainer>
+                    </EmptyClassContentContainer>
                 </SwiperSlide>
             </Swiper>
      );

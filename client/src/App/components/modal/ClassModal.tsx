@@ -3,12 +3,173 @@ import { useEffect, useState } from "react";
 import SectionInfoType, { InstructorType, DaysAndLocationType } from "../../../../../types/getSectionInfoType"
 import ActiveClassType from "../../types/ActiveClassType";
 import LoadingIcon from "../loading/LoadingIcon";
+import styled from "styled-components"
+import { device } from "../../css/devices";
 
 export interface ClassModalProps {
     activeClass: ActiveClassType
 }
 
-const ClassModal = ({ activeClass }: any) => {
+const ModalContainer = styled.div`
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-rows: 80px 1fr;
+`
+
+const HeaderContainer = styled.div`
+    width: 100%; 
+    height: 100%; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    background: #BA0C2F;
+
+    @media ${device.landscapeTablet} { 
+        border-radius: 0px 0px 12px 12px;
+    }
+`
+
+const HeaderText = styled.h1`
+    font-size: 28px;
+
+    text-align: center;
+`
+
+const ContentContainer = styled.div`
+    width: 100%;
+
+    box-sizing: border-box;
+
+    overflow: scroll;
+
+    padding: 16px 12px;
+`
+
+const Title = styled.h1`
+    color: ${props => props.theme.colors.black}
+`
+
+const Description = styled.p`
+    color: ${props => props.theme.colors.black}
+`
+
+const LoadScreen = styled.div`
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+
+const InfoPanels = styled.div`
+    width: 100%;
+    max-width: 100%;
+
+    display: grid;
+    grid-template-rows: min-content min-content;
+    gap: 20px;
+`
+
+const InfoPanel = styled.div`
+    width: 100%; 
+    
+    display: grid;
+    grid-template-rows: 40px auto;
+`
+
+const InfoPanelTitleContainer = styled.div`
+    grid-row: 1 / 2;
+    
+    width: 100%;
+    height: 100%;
+
+    border-radius: 12px 12px 0px 0px;
+    
+    background: ${props => props.theme.colors.scarlet};
+    
+    display: flex;
+    align-items: flex-end;
+`
+
+const InfoPanelTitle = styled.h2`
+    margin-left: 10px;
+    margin-bottom: 4px;
+
+    font-weight: 575;
+
+    @media ${device.landscapeTablet} { 
+        margin-left: 14px;
+        margin-bottom: 6px;
+
+        font-weight: 625;
+    }
+`
+
+const InfoPanelContentContainer = styled.div`
+    grid-row: 2 / 3; 
+    
+    width: 100%;
+    height: 100%;
+    
+    border: 2px solid #BA0C2F;
+    
+    box-sizing: border-box;
+`
+
+const ScheduleGridContainer = styled.div<{ alt: boolean }>`
+    width: 100%;
+    height: min-content;
+
+    display: grid;
+    grid-template-columns: 35% 25% 20% 20%;
+
+    background: ${props => props.alt ? "gray" : undefined};
+`
+
+const InstructorGridContainer = styled.div<{ alt: boolean }>`
+    width: 100%;
+    height: min-content;
+
+    display: grid;
+    
+    grid-template-columns: 2fr 2fr;
+`
+
+const RowContentContainer = styled.div`
+    height: fit-content;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    margin: 4px 8px;
+`
+
+const RowContent = styled.h3`
+    font-size: 15px;
+    font-weight: 550;
+`
+
+const dayShortName = {
+    "monday": "M",
+    "tuesday": "Tu",
+    "wednesday": "W",
+    "thursday": "Th",
+    "friday": "F"
+}
+
+export interface ClassModalProps {
+    activeClass: ActiveClassType,
+    isDesktop: boolean
+}
+
+const ClassModal = ({ activeClass, isDesktop }: any) => {
     
     const [classData, setClassData] = useState<SectionInfoType | null>(null)
     const [loading, setLoading] = useState<boolean>(true);
@@ -19,7 +180,6 @@ const ClassModal = ({ activeClass }: any) => {
             setClassData(null);
             axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getSectionInfo?class_num=' + activeClass.classNo + '&section_num=' + activeClass.sectionNo)
 			.then(function (response) {
-                console.log(response.data)
 				setClassData(response.data)
 			})
 			.catch(function (error) {
@@ -29,19 +189,19 @@ const ClassModal = ({ activeClass }: any) => {
     }, [activeClass])
     
     return ( classData && !loading ?
-        <div style={{height: "100%", width: "100%"}} >
-            <div style={{display: "flex", width: "100%", alignItems: "center", justifyContent: "center", height: "80px", background: "#BA0C2F", marginBottom: "20px", borderBottomLeftRadius: "12px 12px", borderBottomRightRadius: "12px 12px"}}>
-                 <h1>{classData.subject + " " + classData.code}</h1>
-             </div>
-             <div style={{maxWidth: "100%", height: "auto", padding: "0px 20px"}}>
-                <h1 style={{color: "#13070C"}}>{classData.title}</h1>
-                <p style={{color: "#13070C"}}>{classData.description}</p>
-                <div style={{display: "grid", gridTemplateRows: "min-content min-content", gap: "20px", margin: "0px 10px"}}>
-                    <div style={{width: "100%", display: "grid", gridTemplateRows: "40px min-content", margin: "0px 0px"}}>
-                        <div style={{gridRow: "1 / 2", width: "100%", height: "100%", borderTopLeftRadius: "12px", borderTopRightRadius: "12px", background: "#BA0C2F", display: "flex", alignItems: "flex-end"}}>
-                            <h2 style={{marginLeft: "12px", marginBottom: "6px"}}>Schedule</h2>
-                        </div>
-                        <div style={{gridRow: "2 / 3", width: "100%", height: "100%", border: "2px solid #BA0C2F", boxSizing: "border-box", padding: "2px 8px 6px 8px"}}>
+        <ModalContainer>
+            <HeaderContainer>
+                 <HeaderText>{classData.subject + " " + classData.code}</HeaderText>
+            </HeaderContainer>
+             <ContentContainer>
+                <Title>{classData.title}</Title>
+                <Description>{classData.description}</Description>
+                <InfoPanels>
+                    <InfoPanel>
+                        <InfoPanelTitleContainer>
+                            <InfoPanelTitle>Schedule</InfoPanelTitle>
+                        </InfoPanelTitleContainer>
+                        <InfoPanelContentContainer>
                             {
                                 classData.daysAndLocations.map((daysAndLocation: DaysAndLocationType, i: number) => {
                                     return (
@@ -50,56 +210,56 @@ const ClassModal = ({ activeClass }: any) => {
                                             let k = j + i
 
                                             return (
-                                                <div style={{display: "grid", gridTemplateColumns: "30% 40% 15% 15%", width: "100%", height: "min-content"}}>
-                                                    <div style={{gridColumn: "1 / 2", display: "flex", alignItems: "center", justifyContent: "flex-start", padding: "4px 16px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
-                                                        <h3 style={{textTransform: "capitalize"}}>{day}</h3>
-                                                    </div>
-                                                    <div style={{gridColumn: "2 / 3", display: "flex", alignItems: "center", justifyContent: "center", padding: "4px 16px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
-                                                        <h3>{daysAndLocation.location}</h3>
-                                                    </div>
-                                                    <div style={{gridColumn: "3 / 4", display: "flex", alignItems: "center", justifyContent: "center", padding: "4px 16px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
-                                                        <h3>{classData.start}</h3>
-                                                    </div>
-                                                    <div style={{gridColumn: "4 / 5", display: "flex", alignItems: "center", justifyContent: "center", padding: "4px 16px", height: "fit-content", background: k % 2 === 0 ? undefined : "gray"}}>
-                                                        <h3>{classData.end}</h3>
-                                                    </div>
-                                                </div>
+                                                <ScheduleGridContainer alt={k % 2 !== 0}>
+                                                    <RowContentContainer style={{justifyContent: "flex-start"}}>
+                                                        <RowContent>{day.charAt(0).toUpperCase() + day.slice(1)}</RowContent>
+                                                    </RowContentContainer>
+                                                    <RowContentContainer style={{justifyContent: "center"}}>
+                                                        <RowContent>{daysAndLocation.location}</RowContent>
+                                                    </RowContentContainer>
+                                                    <RowContentContainer style={{justifyContent: "flex-end"}}>
+                                                        <RowContent>{classData.start}</RowContent>
+                                                    </RowContentContainer>
+                                                    <RowContentContainer style={{justifyContent: "flex-end"}}>
+                                                        <RowContent>{classData.end}</RowContent>
+                                                    </RowContentContainer>
+                                                </ScheduleGridContainer>
                                             )
                                         })
                                     )
                                 })
                             }
-                        </div>
-                    </div>
-                    <div style={{width: "100%", display: "grid", gridTemplateRows: "40px min-content"}}>
-                        <div style={{gridRow: "1 / 2", width: "100%", height: "100%", borderTopLeftRadius: "12px", borderTopRightRadius: "12px", background: "#BA0C2F", display: "flex", alignItems: "flex-end"}}>
-                            <h2 style={{marginLeft: "12px", marginBottom: "6px"}}>Instructors</h2>
-                        </div>
-                        <div style={{gridRow: "2 / 3", width: "100%", height: "100%", border: "2px solid #BA0C2F", boxSizing: "border-box", padding: "2px 8px 6px 8px"}}>
+                        </InfoPanelContentContainer>
+                    </InfoPanel>
+                    <InfoPanel>
+                        <InfoPanelTitleContainer>
+                            <InfoPanelTitle>Instructors</InfoPanelTitle>
+                        </InfoPanelTitleContainer>
+                        <InfoPanelContentContainer>
                             {
                                 classData.instructors.map((instructor: InstructorType, i: number) => {
                                     return (
-                                        <div style={{display: "grid", gridTemplateColumns: "2fr 2fr", width: "100%", height: "min-content"}}>
-                                            <div style={{gridColumn: "1 / 2", display: "flex", alignItems: "center", justifyContent: "flex-start", padding: "4px 16px", background: i % 2 === 0 ? undefined : "gray"}}>
-                                                <h3>{instructor.name}</h3>
-                                            </div>
-                                            <div style={{gridColumn: "2 / 3", display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "4px 16px", background: i % 2 === 0 ? undefined : "gray"}}>
-                                                <h3>{instructor.email}</h3>
-                                            </div>
-                                        </div>
+                                        <InstructorGridContainer alt={i % 2 !== 0}>
+                                            <RowContentContainer style={{justifyContent: "flex-start"}}>
+                                                <RowContent>{instructor.name}</RowContent>
+                                            </RowContentContainer>
+                                            <RowContentContainer style={{justifyContent: "flex-end"}}>
+                                                <RowContent>{instructor.email}</RowContent>
+                                            </RowContentContainer>
+                                        </InstructorGridContainer>
                                     )
                                 })
                                     
                             }
-                        </div>
-                    </div>
-                </div>
-             </div>
-        </div>
+                        </InfoPanelContentContainer>
+                    </InfoPanel>
+                </InfoPanels>
+             </ContentContainer>
+        </ModalContainer>
         :
-        <div style={{width: "100%", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
+        <LoadScreen>
             <LoadingIcon dataLoaded={classData !== null} setLoading={setLoading} /> 
-        </div>
+        </LoadScreen>
     )
 }
  
