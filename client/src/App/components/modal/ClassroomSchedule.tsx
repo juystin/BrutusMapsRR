@@ -17,12 +17,27 @@ function getGridBoxFromTime(time: string, startTime: string, interval: number): 
     return (getMinutes(time) - getMinutes(startTime)) / interval
 }
 
-function getTimeFromGridBox(gridBox: number, interval: number) {
+function get12HrTimeFromGridBox(gridBox: number, interval: number) {
     let totalMinutes = gridBox * interval
     let hours = Math.floor(totalMinutes / 60)
     let minutes = totalMinutes % 60
 
-    return (hours < 10 ? "0" + hours.toString() : hours.toString()) + ":" + (minutes < 10 ? "0" + minutes.toString() : minutes.toString())
+    const suffix = hours >= 12 ? "PM":"AM"
+
+    const updatedHours = ((hours + 11) % 12 + 1)
+
+    return (updatedHours < 10 ? "0" + updatedHours.toString() : updatedHours.toString()) + ":" + (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) + suffix
+}
+
+function get12HrTimeFrom24HrTime(time: string) {
+    let hours = Number(time.substring(0, 2))
+    let minutes = Number(time.substring(3, 5))
+
+    const suffix = hours >= 12 ? "PM":"AM"
+
+    const updatedHours = (hours + 11) % 12 + 1
+
+    return (updatedHours < 10 ? "0" + updatedHours.toString() : updatedHours.toString()) + ":" + (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) + suffix
 }
 
 // Start and end time for schedule, will end before the END_TIME (23:00 means 22:30 will be the last marking, if TIME_MARKINGS = 30)
@@ -142,7 +157,7 @@ const ContentContainer = styled.div`
 const ScheduleContainer = styled.div<{ totalgridboxes: number, endremoval: number, timeboxsize: number, isdesktop: boolean }>`
     display: grid;
     grid-template-rows: repeat( ${props => (props.totalgridboxes - props.endremoval)}, ${props => (props.timeboxsize * (props.isdesktop ? 6 : 3.5))}px);
-    grid-template-columns: minmax(100px, 1fr) 4fr;
+    grid-template-columns: minmax(140px, 1fr) 4fr;
 
     box-sizing: border-box;
 
@@ -232,7 +247,7 @@ function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number,
         timeBoxes.push(
             <TimeBox index={i} size={size}>
                 <Time>
-                    {getTimeFromGridBox(i + (getMinutes(startTime) / interval), interval)}
+                    {get12HrTimeFromGridBox(i + (getMinutes(startTime) / interval), interval)}
                 </Time>    
             </TimeBox>
         )
@@ -262,7 +277,7 @@ function loadClasses(startTime: string, interval: number, offset: number, indivi
                     })
                 }}>
                 <ClassIdentifier>{classInfo.subject + " " + classInfo.code}</ClassIdentifier>
-                <ClassTime>{classInfo.start + " - " + classInfo.end}</ClassTime>
+                <ClassTime>{get12HrTimeFrom24HrTime(classInfo.start) + " - " + get12HrTimeFrom24HrTime(classInfo.end)}</ClassTime>
             </ClassBlockContainer>
         )
     })

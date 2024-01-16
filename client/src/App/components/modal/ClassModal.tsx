@@ -6,6 +6,17 @@ import LoadingIcon from "../loading/LoadingIcon";
 import styled from "styled-components"
 import { device } from "../../css/devices";
 
+function get12HrTimeFrom24HrTime(time: string) {
+    let hours = Number(time.substring(0, 2))
+    let minutes = Number(time.substring(3, 5))
+
+    const suffix = hours >= 12 ? "PM":"AM"
+
+    const updatedHours = (hours + 11) % 12 + 1
+
+    return (updatedHours < 10 ? "0" + updatedHours.toString() : updatedHours.toString()) + ":" + (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) + suffix
+}
+
 export interface ClassModalProps {
     activeClass: ActiveClassType
 }
@@ -103,9 +114,6 @@ const InfoPanelTitle = styled.h2`
     font-weight: 575;
 
     @media ${device.landscapeTablet} { 
-        margin-left: 14px;
-        margin-bottom: 6px;
-
         font-weight: 625;
     }
 `
@@ -156,20 +164,12 @@ const RowContent = styled.h3`
     font-weight: 550;
 `
 
-const dayShortName = {
-    "monday": "M",
-    "tuesday": "Tu",
-    "wednesday": "W",
-    "thursday": "Th",
-    "friday": "F"
-}
-
 export interface ClassModalProps {
     activeClass: ActiveClassType,
     isDesktop: boolean
 }
 
-const ClassModal = ({ activeClass, isDesktop }: any) => {
+const ClassModal = ({ activeClass }: any) => {
     
     const [classData, setClassData] = useState<SectionInfoType | null>(null)
     const [loading, setLoading] = useState<boolean>(true);
@@ -218,10 +218,10 @@ const ClassModal = ({ activeClass, isDesktop }: any) => {
                                                         <RowContent>{daysAndLocation.location}</RowContent>
                                                     </RowContentContainer>
                                                     <RowContentContainer style={{justifyContent: "flex-end"}}>
-                                                        <RowContent>{classData.start}</RowContent>
+                                                        <RowContent>{get12HrTimeFrom24HrTime(classData.start)}</RowContent>
                                                     </RowContentContainer>
                                                     <RowContentContainer style={{justifyContent: "flex-end"}}>
-                                                        <RowContent>{classData.end}</RowContent>
+                                                        <RowContent>{get12HrTimeFrom24HrTime(classData.end)}</RowContent>
                                                     </RowContentContainer>
                                                 </ScheduleGridContainer>
                                             )

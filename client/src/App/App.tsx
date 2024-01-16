@@ -10,8 +10,14 @@ import Theme from './css/Theme';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { device } from './css/devices';
 
+const CURRENT_TIME = new Date()
+
 function getCurrentDay() {
-	return ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"][new Date().getDay()]
+	return ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"][CURRENT_TIME.getDay()]
+}
+
+function getCurrentTime(): string {
+	return (CURRENT_TIME.getHours() < 10 ? "0" + CURRENT_TIME.getHours.toString() : CURRENT_TIME.getHours().toString()) + (CURRENT_TIME.getMinutes() < 10 ? "0" + CURRENT_TIME.getMinutes.toString() : CURRENT_TIME.getMinutes().toString())
 }
 
 function App() {
@@ -49,7 +55,7 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=1200&order=available')
+		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
 			.then(function (response) {
 				setAvailabilityData(response.data)
 			})
@@ -57,22 +63,6 @@ function App() {
 				console.log(error);
 			})
 	}, [])
-
-	useEffect(() => {
-		function handleResize() {
-		// Update the state or perform any other actions when the
-		// browser is resized
-		console.log("ok")
-		}
-	
-		// Attach the event listener to the window object
-		window.addEventListener('resize', handleResize);
-	
-		// Remove the event listener when the component unmounts
-		return () => {
-		window.removeEventListener('resize', handleResize);
-		};
-	}, []);
 
 	return ( buildingData && availabilityData ?
 		<Theme>
