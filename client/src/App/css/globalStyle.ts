@@ -2,7 +2,7 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
     :root {
-        font-family: Inter, system-ui;
+        font-family: system-ui;
 
         color-scheme: light dark;
         color: rgba(255, 255, 255, 0.87);
@@ -45,6 +45,11 @@ const GlobalStyles = createGlobalStyle`
     h3 {
         margin: 0 0;
         cursor: default;
+        color: #13070C;
+    }
+
+    p {
+        font-weight: normal;
         color: #13070C;
     }
 

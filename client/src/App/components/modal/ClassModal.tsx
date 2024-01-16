@@ -44,9 +44,9 @@ const ContentContainer = styled.div`
 
     box-sizing: border-box;
 
-    padding: 10px 20px 0px 20px;
-
     overflow: scroll;
+
+    padding: 16px 12px;
 `
 
 const Title = styled.h1`
@@ -68,14 +68,11 @@ const LoadScreen = styled.div`
 
 const InfoPanels = styled.div`
     width: 100%;
-
-    box-sizing: border-box;
+    max-width: 100%;
 
     display: grid;
     grid-template-rows: min-content min-content;
     gap: 20px;
-    
-    padding: 0px 10px;
 `
 
 const InfoPanel = styled.div`
@@ -100,8 +97,17 @@ const InfoPanelTitleContainer = styled.div`
 `
 
 const InfoPanelTitle = styled.h2`
-    margin-left: 14px;
-    margin-bottom: 6px;
+    margin-left: 10px;
+    margin-bottom: 4px;
+
+    font-weight: 575;
+
+    @media ${device.landscapeTablet} { 
+        margin-left: 14px;
+        margin-bottom: 6px;
+
+        font-weight: 625;
+    }
 `
 
 const InfoPanelContentContainer = styled.div`
@@ -137,15 +143,26 @@ const InstructorGridContainer = styled.div<{ alt: boolean }>`
 const RowContentContainer = styled.div`
     height: fit-content;
 
+    box-sizing: border-box;
+
     display: flex;
     align-items: center;
 
-    margin: 4px 24px;
+    margin: 4px 8px;
 `
 
 const RowContent = styled.h3`
-    
+    font-size: 15px;
+    font-weight: 550;
 `
+
+const dayShortName = {
+    "monday": "M",
+    "tuesday": "Tu",
+    "wednesday": "W",
+    "thursday": "Th",
+    "friday": "F"
+}
 
 export interface ClassModalProps {
     activeClass: ActiveClassType,
@@ -163,7 +180,6 @@ const ClassModal = ({ activeClass, isDesktop }: any) => {
             setClassData(null);
             axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getSectionInfo?class_num=' + activeClass.classNo + '&section_num=' + activeClass.sectionNo)
 			.then(function (response) {
-                console.log(response.data)
 				setClassData(response.data)
 			})
 			.catch(function (error) {
@@ -180,68 +196,64 @@ const ClassModal = ({ activeClass, isDesktop }: any) => {
              <ContentContainer>
                 <Title>{classData.title}</Title>
                 <Description>{classData.description}</Description>
-                { isDesktop ?
-                    <InfoPanels>
-                        <InfoPanel>
-                            <InfoPanelTitleContainer>
-                                <InfoPanelTitle>Schedule</InfoPanelTitle>
-                            </InfoPanelTitleContainer>
-                            <InfoPanelContentContainer>
-                                {
-                                    classData.daysAndLocations.map((daysAndLocation: DaysAndLocationType, i: number) => {
-                                        return (
-                                            daysAndLocation.days.map((day: string, j: number) => {
+                <InfoPanels>
+                    <InfoPanel>
+                        <InfoPanelTitleContainer>
+                            <InfoPanelTitle>Schedule</InfoPanelTitle>
+                        </InfoPanelTitleContainer>
+                        <InfoPanelContentContainer>
+                            {
+                                classData.daysAndLocations.map((daysAndLocation: DaysAndLocationType, i: number) => {
+                                    return (
+                                        daysAndLocation.days.map((day: string, j: number) => {
 
-                                                let k = j + i
+                                            let k = j + i
 
-                                                return (
-                                                    <ScheduleGridContainer alt={k % 2 !== 0}>
-                                                        <RowContentContainer style={{justifyContent: "flex-start"}}>
-                                                            <RowContent>{day.charAt(0).toUpperCase() + day.slice(1)}</RowContent>
-                                                        </RowContentContainer>
-                                                        <RowContentContainer style={{justifyContent: "center"}}>
-                                                            <RowContent>{daysAndLocation.location}</RowContent>
-                                                        </RowContentContainer>
-                                                        <RowContentContainer style={{justifyContent: "flex-end"}}>
-                                                            <RowContent>{classData.start}</RowContent>
-                                                        </RowContentContainer>
-                                                        <RowContentContainer style={{justifyContent: "flex-end"}}>
-                                                            <RowContent>{classData.end}</RowContent>
-                                                        </RowContentContainer>
-                                                    </ScheduleGridContainer>
-                                                )
-                                            })
-                                        )
-                                    })
-                                }
-                            </InfoPanelContentContainer>
-                        </InfoPanel>
-                        <InfoPanel>
-                            <InfoPanelTitleContainer>
-                                <InfoPanelTitle>Instructors</InfoPanelTitle>
-                            </InfoPanelTitleContainer>
-                            <InfoPanelContentContainer>
-                                {
-                                    classData.instructors.map((instructor: InstructorType, i: number) => {
-                                        return (
-                                            <InstructorGridContainer alt={i % 2 !== 0}>
-                                                <RowContentContainer style={{justifyContent: "flex-start"}}>
-                                                    <RowContent>{instructor.name}</RowContent>
-                                                </RowContentContainer>
-                                                <RowContentContainer style={{justifyContent: "flex-end"}}>
-                                                    <RowContent>{instructor.email}</RowContent>
-                                                </RowContentContainer>
-                                            </InstructorGridContainer>
-                                        )
-                                    })
-                                        
-                                }
-                            </InfoPanelContentContainer>
-                        </InfoPanel>
-                    </InfoPanels>
-                :
-                    <></>
-                }
+                                            return (
+                                                <ScheduleGridContainer alt={k % 2 !== 0}>
+                                                    <RowContentContainer style={{justifyContent: "flex-start"}}>
+                                                        <RowContent>{day.charAt(0).toUpperCase() + day.slice(1)}</RowContent>
+                                                    </RowContentContainer>
+                                                    <RowContentContainer style={{justifyContent: "center"}}>
+                                                        <RowContent>{daysAndLocation.location}</RowContent>
+                                                    </RowContentContainer>
+                                                    <RowContentContainer style={{justifyContent: "flex-end"}}>
+                                                        <RowContent>{classData.start}</RowContent>
+                                                    </RowContentContainer>
+                                                    <RowContentContainer style={{justifyContent: "flex-end"}}>
+                                                        <RowContent>{classData.end}</RowContent>
+                                                    </RowContentContainer>
+                                                </ScheduleGridContainer>
+                                            )
+                                        })
+                                    )
+                                })
+                            }
+                        </InfoPanelContentContainer>
+                    </InfoPanel>
+                    <InfoPanel>
+                        <InfoPanelTitleContainer>
+                            <InfoPanelTitle>Instructors</InfoPanelTitle>
+                        </InfoPanelTitleContainer>
+                        <InfoPanelContentContainer>
+                            {
+                                classData.instructors.map((instructor: InstructorType, i: number) => {
+                                    return (
+                                        <InstructorGridContainer alt={i % 2 !== 0}>
+                                            <RowContentContainer style={{justifyContent: "flex-start"}}>
+                                                <RowContent>{instructor.name}</RowContent>
+                                            </RowContentContainer>
+                                            <RowContentContainer style={{justifyContent: "flex-end"}}>
+                                                <RowContent>{instructor.email}</RowContent>
+                                            </RowContentContainer>
+                                        </InstructorGridContainer>
+                                    )
+                                })
+                                    
+                            }
+                        </InfoPanelContentContainer>
+                    </InfoPanel>
+                </InfoPanels>
              </ContentContainer>
         </ModalContainer>
         :
