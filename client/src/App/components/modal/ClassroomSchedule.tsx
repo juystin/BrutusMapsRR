@@ -4,7 +4,6 @@ import 'swiper/css';
 import { ModalType } from '../../types/ModalType';
 import ActiveClassType from '../../types/ActiveClassType';
 import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
-import { useEffect, useState } from 'react';
 import styled from "styled-components";
 import { device } from '../../css/devices';
 
