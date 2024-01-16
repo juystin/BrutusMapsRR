@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './App.css'
 import Map from 'react-map-gl/maplibre';
 import AnimatedMarker from './components/marker/AnimatedMarker';
 import axios from 'axios';
@@ -7,12 +6,17 @@ import Modal from './components/modal/Modal';
 import { ModalType } from './types/ModalType';
 import getBuildingsType from "../../../types/getBuildingsType"
 import getAvailabilityType from "../../../types/getAvailabilityType"
+import Theme from './css/Theme';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { device } from './css/devices';
 
 function getCurrentDay() {
 	return ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"][new Date().getDay()]
 }
 
 function App() {
+
+	const isDesktop: boolean = useMediaQuery(device.landscapeTablet);
 
 	const [mapLoaded, setMapLoaded] = useState<boolean>(false);
 	const [buildingData, setBuildingData] = useState<getBuildingsType[] | null>(null);
@@ -54,9 +58,25 @@ function App() {
 			})
 	}, [])
 
+	useEffect(() => {
+		function handleResize() {
+		// Update the state or perform any other actions when the
+		// browser is resized
+		console.log("ok")
+		}
+	
+		// Attach the event listener to the window object
+		window.addEventListener('resize', handleResize);
+	
+		// Remove the event listener when the component unmounts
+		return () => {
+		window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+
 	return ( buildingData && availabilityData ?
-		<>
-			{ mapLoaded ? <Modal type={modalType} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType}/> : <></> }
+		<Theme>
+			{ mapLoaded ? <Modal type={modalType} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType} isDesktop={isDesktop}/> : <></> }
 			<Map
 				initialViewState={{
 					longitude: Number(buildingData.find((building: any) => building.buildingNum === "339")!.lng),
@@ -78,13 +98,13 @@ function App() {
 				{ mapLoaded ?
 					buildingDataByLat!.map((buildingData: any) => {
 						return ( 
-							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum)!.available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType}/>
+							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum)!.available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType} isDesktop={isDesktop}/>
 						)
 					})
 					: <></>
 				}
 			</Map>
-		</>
+		</Theme>
 	: <></>)
 }
 
