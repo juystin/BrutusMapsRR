@@ -142,7 +142,9 @@ const ContentContainer = styled.div`
 const ScheduleContainer = styled.div<{ totalgridboxes: number, endremoval: number, timeboxsize: number, isdesktop: boolean }>`
     display: grid;
     grid-template-rows: repeat( ${props => (props.totalgridboxes - props.endremoval)}, ${props => (props.timeboxsize * (props.isdesktop ? 6 : 3.5))}px);
-    grid-template-columns: 1fr 4fr;
+    grid-template-columns: minmax(100px, 1fr) 4fr;
+
+    box-sizing: border-box;
 
     padding: 10px 20px 0px 0px;
 `
@@ -183,6 +185,10 @@ const ClassBlockContainer = styled.div<{ startbox: number, endbox: number, offse
 
     height: 100%;
 
+    box-sizing: border-box;
+
+    padding: 0px 8px;
+
     background: #BA0C2F;
     
     border-radius: 12px;
@@ -203,6 +209,8 @@ const ClassBlockContainer = styled.div<{ startbox: number, endbox: number, offse
 const ClassIdentifier = styled.h1`
     cursor: pointer;
     font-size: 22px;
+    
+    text-align: center;
 
     @media ${device.landscapeTablet} {
         font-size: 36px;
