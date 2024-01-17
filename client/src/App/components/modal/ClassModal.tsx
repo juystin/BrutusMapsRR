@@ -6,6 +6,17 @@ import LoadingIcon from "../loading/LoadingIcon";
 import styled from "styled-components"
 import { device } from "../../css/devices";
 
+function get12HrTimeFrom24HrTime(time: string) {
+    let hours = Number(time.substring(0, 2))
+    let minutes = Number(time.substring(3, 5))
+
+    const suffix = hours >= 12 ? "PM":"AM"
+
+    const updatedHours = (hours + 11) % 12 + 1
+
+    return (updatedHours < 10 ? "0" + updatedHours.toString() : updatedHours.toString()) + ":" + (minutes < 10 ? "0" + minutes.toString() : minutes.toString()) + suffix
+}
+
 export interface ClassModalProps {
     activeClass: ActiveClassType
 }
@@ -210,10 +221,10 @@ const ClassModal = ({ activeClass }: any) => {
                                                         <RowContent>{daysAndLocation.location}</RowContent>
                                                     </RowContentContainer>
                                                     <RowContentContainer style={{justifyContent: "flex-end"}}>
-                                                        <RowContent>{classData.start}</RowContent>
+                                                        <RowContent>{get12HrTimeFrom24HrTime(classData.start)}</RowContent>
                                                     </RowContentContainer>
                                                     <RowContentContainer style={{justifyContent: "flex-end"}}>
-                                                        <RowContent>{classData.end}</RowContent>
+                                                        <RowContent>{get12HrTimeFrom24HrTime(classData.end)}</RowContent>
                                                     </RowContentContainer>
                                                 </ScheduleGridContainer>
                                             )
