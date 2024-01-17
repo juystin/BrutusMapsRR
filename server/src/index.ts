@@ -25,5 +25,5 @@ app.use('/api', getSectionInfo);
 
 // Fallback to 8000 if env PORT not specified
 app.listen(process.env.PORT || 8000, () => {
-    console.log("Server started")
+    console.log("Server started " + " on " + process.env.PORT || 8800)
 })
