@@ -17,7 +17,7 @@ function getCurrentDay() {
 }
 
 function getCurrentTime(): string {
-	return (CURRENT_TIME.getHours() < 10 ? "0" + CURRENT_TIME.getHours.toString() : CURRENT_TIME.getHours().toString()) + (CURRENT_TIME.getMinutes() < 10 ? "0" + CURRENT_TIME.getMinutes().toString() : CURRENT_TIME.getMinutes().toString())
+	return (CURRENT_TIME.getHours() < 10 ? "0" + CURRENT_TIME.getHours().toString() : CURRENT_TIME.getHours().toString()) + (CURRENT_TIME.getMinutes() < 10 ? "0" + CURRENT_TIME.getMinutes().toString() : CURRENT_TIME.getMinutes().toString())
 }
 
 function App() {
