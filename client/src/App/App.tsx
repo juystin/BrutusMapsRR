@@ -40,23 +40,23 @@ function App() {
 	const [modalType, setModalType] = useState<ModalType>(ModalType.ALL)
 
 	useEffect(() => {
-		console.log('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
+		console.log('https://' + import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
 		// Default marker order is by first-in placement. Knowing this, place markers bottom to top to prevent weird overlaps (i.e., place by latitude)
-		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getBuildings')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/api/getBuildings')
 			.then(function (response) {
 				setBuildingData(response.data)
 			})
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getBuildings?order=lat')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/api/getBuildings?order=lat')
 			.then(function (response) {
 				setBuildingDataByLat(response.data)
 			})
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
 			.then(function (response) {
 				setAvailabilityData(response.data)
 			})

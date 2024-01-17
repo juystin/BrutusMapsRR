@@ -54,7 +54,7 @@ const ClassroomModal = ({ activeClassroom, setModalType, setActiveClass, isDeskt
         if (activeClassroom) {
             setLoading(true)
             setClassroomData(null);
-            axios.get('http://' + import.meta.env.VITE_BACKEND_IP + '/api/getClassroomSchedule?facility=' + activeClassroom)
+            axios.get(import.meta.env.VITE_BACKEND_IP + '/api/getClassroomSchedule?facility=' + activeClassroom)
 			.then(function (response) {
 				setClassroomData(response.data)
 			})
