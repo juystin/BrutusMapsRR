@@ -40,23 +40,22 @@ function App() {
 	const [modalType, setModalType] = useState<ModalType>(ModalType.ALL)
 
 	useEffect(() => {
-		console.log('https://' + import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
 		// Default marker order is by first-in placement. Knowing this, place markers bottom to top to prevent weird overlaps (i.e., place by latitude)
-		axios.get(import.meta.env.VITE_BACKEND_IP + '/api/getBuildings')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/getBuildings')
 			.then(function (response) {
 				setBuildingData(response.data)
 			})
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get(import.meta.env.VITE_BACKEND_IP + '/api/getBuildings?order=lat')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/getBuildings?order=lat')
 			.then(function (response) {
 				setBuildingDataByLat(response.data)
 			})
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get(import.meta.env.VITE_BACKEND_IP + '/api/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
 			.then(function (response) {
 				setAvailabilityData(response.data)
 			})
@@ -75,7 +74,7 @@ function App() {
 					zoom: 14
 				}}
 				style={{width: "100%", height: "100%", position: "relative", zIndex: "1"}}
-				mapStyle={`http://` + import.meta.env.VITE_WEBSERVER_IP + `/styles/brutustiles_style/style.json`}
+				mapStyle={import.meta.env.VITE_TILESERVER_IP}
 				onLoad={() => setMapLoaded(true)}
 				doubleClickZoom={false}
 				cursor='default'

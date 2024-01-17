@@ -181,7 +181,7 @@ const ClassModal = ({ activeClass }: any) => {
         if (activeClass) {
             setLoading(true)
             setClassData(null);
-            axios.get(import.meta.env.VITE_BACKEND_IP + '/api/getSectionInfo?class_num=' + activeClass.classNo + '&section_num=' + activeClass.sectionNo)
+            axios.get(import.meta.env.VITE_BACKEND_IP + '/getSectionInfo?class_num=' + activeClass.classNo + '&section_num=' + activeClass.sectionNo)
 			.then(function (response) {
 				setClassData(response.data)
 			})
