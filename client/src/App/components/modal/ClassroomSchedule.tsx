@@ -20,7 +20,7 @@ function getMinutes(time: string) {
 }
 
 function getGridBoxFromTime(time: string, startTime: string, interval: number): number {
-    return (getMinutes(time) - getMinutes(startTime)) / interval
+    return Math.floor((getMinutes(time) - getMinutes(startTime)) / interval)
 }
 
 function get12HrTimeFromGridBox(gridBox: number, interval: number) {
@@ -224,6 +224,7 @@ const CurrentTimeBox = styled.div<{ startbox: number, size: number }>`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+
 `
 
 const CurrentTimeBreak = styled.div<{ startbox: number, offset: number }>`
@@ -300,6 +301,8 @@ function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number,
     } else {
         currentTime = context.time
     }
+
+    console.log(currentTime)
 
     let timeBoxes: any = []
     for (let i = getGridBoxFromTime(startTime, startTime, interval); i < getGridBoxFromTime(endTime, startTime, interval); i += (timeMarkings / interval)) {
