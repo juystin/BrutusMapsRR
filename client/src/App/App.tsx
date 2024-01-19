@@ -56,7 +56,7 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get(import.meta.env.VITE_BACKEND_IP + '/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime().replace(":", "") + '&order=available')
 			.then(function (response) {
 				setAvailabilityData(response.data)
 			})
