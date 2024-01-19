@@ -56,7 +56,7 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get(import.meta.env.VITE_BACKEND_IP + '/getAvailability?day=' + getCurrentDay() + '&time=' + "1220" + '&order=available')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
 			.then(function (response) {
 				setAvailabilityData(response.data)
 			})
@@ -68,7 +68,7 @@ function App() {
 	return ( buildingData && availabilityData ?
 		<DayTimeContext.Provider value={{
 			day: getCurrentDay(),
-			time: "12:20"
+			time: getCurrentTime()
 		}}>
 			<Theme>
 				{ mapLoaded ? <Modal type={modalType} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType} isDesktop={isDesktop}/> : <></> }

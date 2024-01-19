@@ -7,7 +7,7 @@ import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType
 import styled from "styled-components";
 import { device } from '../../css/devices';
 import { DayTimeContext } from '../../DayTimeContext';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useRef } from 'react';
 
 enum Status {
     PAST,
