@@ -290,22 +290,32 @@ const ClassTime = styled.h2<{ status: Status }>`
 `
 
 function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number, interval: number, size: number, day: string, ref: any) {
-    const timeDayContext = useContext(DayTimeContext);
+    const context = useContext(DayTimeContext);
+    let currentTime;
+
+    if (context.time < startTime) {
+        currentTime = startTime
+    } else if (context.time > endTime) {
+        currentTime = endTime
+    } else {
+        currentTime = context.time
+    }
+
     let timeBoxes: any = []
     for (let i = getGridBoxFromTime(startTime, startTime, interval); i < getGridBoxFromTime(endTime, startTime, interval); i += (timeMarkings / interval)) {
         timeBoxes.push(
-            <TimeBox index={i} size={size} opacity={Math.abs(getGridBoxFromTime(timeDayContext.time, startTime, interval) - i) > 2 || timeDayContext.day !== day ? Math.abs(getGridBoxFromTime(timeDayContext.time, startTime, interval) - i) > 3 || timeDayContext.day !== day ? 1 : 0.2 : 0}>
+            <TimeBox index={i} size={size} opacity={Math.abs(getGridBoxFromTime(currentTime, startTime, interval) - i) > 2 || context.day !== day ? Math.abs(getGridBoxFromTime(currentTime, startTime, interval) - i) > 3 || context.day !== day ? 1 : 0.2 : 0}>
                 <Time>
                     {get12HrTimeFromGridBox(i + (getMinutes(startTime) / interval), interval)}
                 </Time>
             </TimeBox>
         )
     }
-    if (day === timeDayContext.day) {
+    if (day === context.day) {
         timeBoxes.push(
-            <CurrentTimeBox ref={ref} startbox={timeDayContext.time > "22:30" ? getGridBoxFromTime("22:30", startTime, interval) : timeDayContext.time < "08:00" ? getGridBoxFromTime("08:00", startTime, interval) : getGridBoxFromTime(timeDayContext.time, startTime, interval)} size={size} >
+            <CurrentTimeBox ref={ref} startbox={getGridBoxFromTime(currentTime, startTime, interval)} size={size} >
                 <CurrentTime>
-                    { get12HrTimeFrom24HrTime(timeDayContext.time) }
+                    { get12HrTimeFrom24HrTime(currentTime) }
                 </CurrentTime>
             </CurrentTimeBox>
         )
@@ -330,9 +340,9 @@ function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number
 }
 
 function loadClasses(startTime: string, interval: number, offset: number, individualDayInfo: any, setModalType: React.Dispatch<React.SetStateAction<ModalType>>, setActiveClass: React.Dispatch<React.SetStateAction<any>>, day: string) {
-    const timeDayContext = useContext(DayTimeContext);
+    const context = useContext(DayTimeContext);
     return individualDayInfo.schedule.map((classInfo: any) => {
-        let status = day !== timeDayContext.day || timeDayContext.time < classInfo.start ? Status.FUTURE : timeDayContext.time > classInfo.end ? Status.PAST : Status.PRESENT
+        let status = day !== context.day || context.time < classInfo.start ? Status.FUTURE : context.time > classInfo.end ? Status.PAST : Status.PRESENT
         return (
             <ClassBlockContainer startbox={getGridBoxFromTime(classInfo.start, startTime, interval)} endbox={getGridBoxFromTime(classInfo.end, startTime, interval)} offset={offset} status={status}
                 onClick={() => {
