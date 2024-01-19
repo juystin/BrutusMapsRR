@@ -13,7 +13,7 @@ const allowedDays: string[] = ["sunday", "monday", "tuesday", "wednesday", "thur
 route.get('/getAvailability', function (req: Request, res: Response) {
     const db = new Database();
 
-    if ((typeof req.query.day === 'string' && !allowedDays.includes(req.query.day)) || (typeof req.query.time === 'string' && (req.query.time.length !== 4 || (req.query.time && !isStringNumericalInteger(req.query.time.replace(/^0+/, '')))))) {
+    if ((typeof req.query.day === 'string' && !allowedDays.includes(req.query.day)) || (typeof req.query.time === 'string' && (req.query.time.length !== 4 || isNaN(parseInt(req.query.time, 10)) || parseInt(req.query.time, 10) < 0))) {
         res.send("Time (\"HHMM\", 24hr) and day (lowercase) must be in correct format.");
         return;
     }
