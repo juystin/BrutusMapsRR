@@ -9,6 +9,7 @@ import getAvailabilityType from "../../../types/getAvailabilityType"
 import Theme from './css/Theme';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { device } from './css/devices';
+import { DayTimeContext } from './DayTimeContext';
 
 const CURRENT_TIME = new Date()
 
@@ -17,7 +18,7 @@ function getCurrentDay() {
 }
 
 function getCurrentTime(): string {
-	return (CURRENT_TIME.getHours() < 10 ? "0" + CURRENT_TIME.getHours().toString() : CURRENT_TIME.getHours().toString()) + (CURRENT_TIME.getMinutes() < 10 ? "0" + CURRENT_TIME.getMinutes().toString() : CURRENT_TIME.getMinutes().toString())
+	return (CURRENT_TIME.getHours() < 10 ? "0" + CURRENT_TIME.getHours().toString() : CURRENT_TIME.getHours().toString()) + ":" + (CURRENT_TIME.getMinutes() < 10 ? "0" + CURRENT_TIME.getMinutes().toString() : CURRENT_TIME.getMinutes().toString())
 }
 
 function App() {
@@ -55,7 +56,7 @@ function App() {
 			.catch(function (error) {
 				console.log(error);
 			})
-		axios.get(import.meta.env.VITE_BACKEND_IP + '/getAvailability?day=' + getCurrentDay() + '&time=' + getCurrentTime() + '&order=available')
+		axios.get(import.meta.env.VITE_BACKEND_IP + '/getAvailability?day=' + getCurrentDay() + '&time=' + "1220" + '&order=available')
 			.then(function (response) {
 				setAvailabilityData(response.data)
 			})
@@ -65,36 +66,41 @@ function App() {
 	}, [])
 
 	return ( buildingData && availabilityData ?
-		<Theme>
-			{ mapLoaded ? <Modal type={modalType} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType} isDesktop={isDesktop}/> : <></> }
-			<Map
-				initialViewState={{
-					longitude: Number(buildingData.find((building: any) => building.buildingNum === "339")!.lng),
-					latitude: Number(buildingData.find((building: any) => building.buildingNum === "339")!.lat),
-					zoom: 14
-				}}
-				style={{width: "100%", height: "100%", position: "relative", zIndex: "1"}}
-				mapStyle={import.meta.env.VITE_TILESERVER_IP}
-				onLoad={() => setMapLoaded(true)}
-				doubleClickZoom={false}
-				cursor='default'
-				onClick={() => {
-					if (!hoveringOverMarker) {
-						setActiveMarker(null)
-						setModalType(ModalType.ALL)
+		<DayTimeContext.Provider value={{
+			day: getCurrentDay(),
+			time: "12:20"
+		}}>
+			<Theme>
+				{ mapLoaded ? <Modal type={modalType} activeMarker={activeMarker} setActiveMarker={setActiveMarker} buildingData={buildingData} availabilityData={availabilityData} setModalType={setModalType} isDesktop={isDesktop}/> : <></> }
+				<Map
+					initialViewState={{
+						longitude: Number(buildingData.find((building: any) => building.buildingNum === "339")!.lng),
+						latitude: Number(buildingData.find((building: any) => building.buildingNum === "339")!.lat),
+						zoom: 14
+					}}
+					style={{width: "100%", height: "100%", position: "relative", zIndex: "1"}}
+					mapStyle={import.meta.env.VITE_TILESERVER_IP}
+					onLoad={() => setMapLoaded(true)}
+					doubleClickZoom={false}
+					cursor='default'
+					onClick={() => {
+						if (!hoveringOverMarker) {
+							setActiveMarker(null)
+							setModalType(ModalType.ALL)
+						}
+					}}
+				>
+					{ mapLoaded ?
+						buildingDataByLat!.map((buildingData: any) => {
+							return ( 
+								<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum)!.available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType} isDesktop={isDesktop}/>
+							)
+						})
+						: <></>
 					}
-				}}
-			>
-				{ mapLoaded ?
-					buildingDataByLat!.map((buildingData: any) => {
-						return ( 
-							<AnimatedMarker buildingData={buildingData} available={availabilityData.find((building: any) => building.buildingNum === buildingData.buildingNum)!.available} markerClickCounter={markerClickCounter} setMarkerClickCounter={setMarkerClickCounter} activeMarker={activeMarker} setActiveMarker={setActiveMarker} setHoveringOverMarker={setHoveringOverMarker} setModalType={setModalType} isDesktop={isDesktop}/>
-						)
-					})
-					: <></>
-				}
-			</Map>
-		</Theme>
+				</Map>
+			</Theme>
+		</DayTimeContext.Provider>
 	: <></>)
 }
 

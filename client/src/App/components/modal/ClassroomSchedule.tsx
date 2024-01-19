@@ -6,7 +6,14 @@ import ActiveClassType from '../../types/ActiveClassType';
 import ClassroomScheduleType from "../../../../../types/getClassroomScheduleType"
 import styled from "styled-components";
 import { device } from '../../css/devices';
+import { DayTimeContext } from '../../DayTimeContext';
+import { useContext, useEffect, useRef } from 'react';
 
+enum Status {
+    PAST,
+    PRESENT,
+    FUTURE
+}
 
 function getMinutes(time: string) {
     return (Number(time.substring(0, 2)) * 60) + Number(time.substring(3, 5))
@@ -163,10 +170,12 @@ const ScheduleContainer = styled.div<{ totalgridboxes: number, endremoval: numbe
     padding: 10px 20px 0px 0px;
 `
 
-const TimeBox = styled.div<{ index: number, size: number }>`
+const TimeBox = styled.div<{ index: number, size: number, opacity: number }>`
     grid-row: ${props => props.index + 1} / ${props => props.index + 1 + props.size};
     grid-column: 1 / 2;
     
+    opacity: ${props => props.opacity};
+
     height: 100%;
     width: 100%;
 
@@ -176,7 +185,7 @@ const TimeBox = styled.div<{ index: number, size: number }>`
 `
 
 const Time = styled.h1`
-    color: #13070C;
+    color: ${props => props.theme.colors.black};
     font-size: 16px;
 
     @media ${device.landscapeTablet} {
@@ -193,7 +202,43 @@ const TimeBreak = styled.div<{ index: number, offset: number }>`
     background: #13070C;
 `
 
-const ClassBlockContainer = styled.div<{ startbox: number, endbox: number, offset: number }>`
+const CurrentTime = styled.h1`
+    color: ${props => props.theme.colors.scarlet};
+
+    font-size: 16px;
+
+    margin-right: 4px;
+
+    @media ${device.landscapeTablet} {
+        font-size: 24px;
+    }
+`
+
+const CurrentTimeBox = styled.div<{ startbox: number, size: number }>`
+    grid-row: ${props => props.startbox + 1} / ${props => props.startbox + props.size + 1};
+    grid-column: 1 / 2;
+
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+`
+
+const CurrentTimeBreak = styled.div<{ startbox: number, offset: number }>`
+    height: 1px;
+
+    grid-row: ${props => props.startbox + 1 + props.offset} / ${props => props.startbox + props.offset + 1};
+    grid-column: 2 / 3;
+
+    background: ${props => props.theme.colors.scarlet};
+
+    position: relative;
+    z-index: 3;
+`
+
+const ClassBlockContainer = styled.div<{ startbox: number, endbox: number, offset: number, status: Status }>`
     grid-row: ${props => props.startbox + 1 + props.offset} / ${props => props.endbox + 1 + props.offset};
     grid-column: 2 / 3;
 
@@ -203,7 +248,7 @@ const ClassBlockContainer = styled.div<{ startbox: number, endbox: number, offse
 
     padding: 0px 8px;
 
-    background: #BA0C2F;
+    background: ${props => props.status === Status.FUTURE ? props.theme.colors.scarlet : props.status === Status.PAST ? props.theme.colors.gray : props.theme.colors.dark_scarlet};
     
     border-radius: 12px;
 
@@ -220,9 +265,11 @@ const ClassBlockContainer = styled.div<{ startbox: number, endbox: number, offse
     z-index: 2;
 `
 
-const ClassIdentifier = styled.h1`
+const ClassIdentifier = styled.h1<{ status: Status }>`
     cursor: pointer;
     font-size: 22px;
+
+    color: ${props => props.status === Status.FUTURE ? props.theme.colors.white : props.status === Status.PAST ? props.theme.colors.black : props.theme.colors.white};
     
     text-align: center;
 
@@ -231,43 +278,63 @@ const ClassIdentifier = styled.h1`
     }
 `
 
-const ClassTime = styled.h2`
+const ClassTime = styled.h2<{ status: Status }>`
     cursor: pointer;
     font-size: 13px;
+
+    color: ${props => props.status === Status.FUTURE ? props.theme.colors.white : props.status === Status.PAST ? props.theme.colors.black : props.theme.colors.white};
 
     @media ${device.landscapeTablet} {
         font-size: 20px;
     }
 `
 
-function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number, interval: number, size: number) {
+function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number, interval: number, size: number, day: string, ref: any) {
+    const timeDayContext = useContext(DayTimeContext);
     let timeBoxes: any = []
     for (let i = getGridBoxFromTime(startTime, startTime, interval); i < getGridBoxFromTime(endTime, startTime, interval); i += (timeMarkings / interval)) {
         timeBoxes.push(
-            <TimeBox index={i} size={size}>
+            <TimeBox index={i} size={size} opacity={Math.abs(getGridBoxFromTime(timeDayContext.time, startTime, interval) - i) > 2 || timeDayContext.day !== day ? Math.abs(getGridBoxFromTime(timeDayContext.time, startTime, interval) - i) > 3 || timeDayContext.day !== day ? 1 : 0.2 : 0}>
                 <Time>
                     {get12HrTimeFromGridBox(i + (getMinutes(startTime) / interval), interval)}
-                </Time>    
+                </Time>
             </TimeBox>
+        )
+    }
+    if (day === timeDayContext.day) {
+        timeBoxes.push(
+            <CurrentTimeBox ref={ref} startbox={timeDayContext.time > "22:30" ? getGridBoxFromTime("22:30", startTime, interval) : timeDayContext.time < "08:00" ? getGridBoxFromTime("08:00", startTime, interval) : getGridBoxFromTime(timeDayContext.time, startTime, interval)} size={size} >
+                <CurrentTime>
+                    { get12HrTimeFrom24HrTime(timeDayContext.time) }
+                </CurrentTime>
+            </CurrentTimeBox>
         )
     }
     return timeBoxes
 }
 
-function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number, interval: number, offset: number) {
+function loadTimeBreaks(startTime: string, endTime: string, timeMarkings: number, interval: number, offset: number, day: string) {
     let timeBreaks: any = []
+    const timeDayContext = useContext(DayTimeContext);
     for (let i = getGridBoxFromTime(startTime, startTime, interval); i < getGridBoxFromTime(endTime, startTime, interval); i += (timeMarkings / interval)) {
         timeBreaks.push(
             <TimeBreak index={i} offset={offset} />
         )
     }
+    if (day === timeDayContext.day) {
+        timeBreaks.push(
+            <CurrentTimeBreak startbox={timeDayContext.time > "22:30" ? getGridBoxFromTime("22:30", startTime, interval) : timeDayContext.time < "08:00" ? getGridBoxFromTime("08:00", startTime, interval) : getGridBoxFromTime(timeDayContext.time, startTime, interval)} offset={offset} />
+        )
+    }
     return timeBreaks
 }
 
-function loadClasses(startTime: string, interval: number, offset: number, individualDayInfo: any, setModalType: React.Dispatch<React.SetStateAction<ModalType>>, setActiveClass: React.Dispatch<React.SetStateAction<any>>) {
+function loadClasses(startTime: string, interval: number, offset: number, individualDayInfo: any, setModalType: React.Dispatch<React.SetStateAction<ModalType>>, setActiveClass: React.Dispatch<React.SetStateAction<any>>, day: string) {
+    const timeDayContext = useContext(DayTimeContext);
     return individualDayInfo.schedule.map((classInfo: any) => {
+        let status = day !== timeDayContext.day || timeDayContext.time < classInfo.start ? Status.FUTURE : timeDayContext.time > classInfo.end ? Status.PAST : Status.PRESENT
         return (
-            <ClassBlockContainer startbox={getGridBoxFromTime(classInfo.start, startTime, interval)} endbox={getGridBoxFromTime(classInfo.end, startTime, interval)} offset={offset}
+            <ClassBlockContainer startbox={getGridBoxFromTime(classInfo.start, startTime, interval)} endbox={getGridBoxFromTime(classInfo.end, startTime, interval)} offset={offset} status={status}
                 onClick={() => {
                     setModalType(ModalType.CLASS)
                     setActiveClass({
@@ -275,14 +342,22 @@ function loadClasses(startTime: string, interval: number, offset: number, indivi
                         sectionNo: classInfo.sectionNo
                     })
                 }}>
-                <ClassIdentifier>{classInfo.subject + " " + classInfo.code}</ClassIdentifier>
-                <ClassTime>{get12HrTimeFrom24HrTime(classInfo.start) + " - " + get12HrTimeFrom24HrTime(classInfo.end)}</ClassTime>
+                <ClassIdentifier status={status}>{classInfo.subject + " " + classInfo.code}</ClassIdentifier>
+                <ClassTime status={status}>{get12HrTimeFrom24HrTime(classInfo.start) + " - " + get12HrTimeFrom24HrTime(classInfo.end)}</ClassTime>
             </ClassBlockContainer>
         )
     })
 }
 
 const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass, isDesktop }: ClassroomScheduleProps) => {
+
+    const currentTimeRef = useRef<HTMLInputElement>(null);
+
+    // useEffect(() => {
+    //     if (currentTimeRef.current) {
+    //         currentTimeRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    //     }
+    // }, [currentTimeRef.current])
 
     return (
             <Swiper
@@ -318,9 +393,9 @@ const ClassroomSchedule = ({ classroomData, setModalType, setActiveClass, isDesk
                                     <HeaderText>{individualDayInfo.day}</HeaderText>
                                 </HeaderContainer>
                                 <ScheduleContainer totalgridboxes={TOTAL_GRID_BOXES} endremoval={END_REMOVAL} timeboxsize={TIME_BOX_SIZE} isdesktop={isDesktop}>
-                                    { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE) }
-                                    { loadClasses(START_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass) }
-                                    { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, SCHEDULE_OFFSET) }
+                                    { loadTimeBoxes(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, TIME_BOX_SIZE, individualDayInfo.day, currentTimeRef) }
+                                    { loadClasses(START_TIME, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo, setModalType, setActiveClass, individualDayInfo.day) }
+                                    { loadTimeBreaks(START_TIME, END_TIME, TIME_MARKINGS, BOX_INTERVAL, SCHEDULE_OFFSET, individualDayInfo.day) }
                                 </ScheduleContainer>
                             </ContentContainer>
                         </SwiperSlide>

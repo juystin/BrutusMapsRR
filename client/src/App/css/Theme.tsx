@@ -6,6 +6,7 @@ const theme = {
         white: "#EEE5E9",
         black: "#13070C",
         scarlet: "#BA0C2F",
+        dark_scarlet: "#990A27",
         gray: "#A7B1B7"
     },
     fonts: ["Inter", "system-ui"]
