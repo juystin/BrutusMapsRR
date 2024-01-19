@@ -315,7 +315,7 @@ function loadTimeBoxes(startTime: string, endTime: string, timeMarkings: number,
         timeBoxes.push(
             <CurrentTimeBox ref={ref} startbox={getGridBoxFromTime(currentTime, startTime, interval)} size={size} >
                 <CurrentTime>
-                    { get12HrTimeFrom24HrTime(currentTime) }
+                    { get12HrTimeFrom24HrTime(context.time) }
                 </CurrentTime>
             </CurrentTimeBox>
         )
