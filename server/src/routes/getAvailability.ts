@@ -2,10 +2,6 @@ import { Router, Request, Response } from "express";
 import Database from "../util/Database.js";
 import getAvailabilityType from "../../../types/getAvailabilityType.js"
 
-function isStringNumericalInteger(value: any) {
-    return typeof value === "string" && /^[\-+]?[1-9]{1}\d+$|^[\-+]?0$/.test(value);
-}
-
 const route = Router();
 
 const allowedDays: string[] = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
